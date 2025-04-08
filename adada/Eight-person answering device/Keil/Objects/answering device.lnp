@@ -1,4 +1,0 @@
-".\Objects\STARTUP.obj",
-".\Objects\coco.obj" 
-TO ".\Objects\answering device" 
-PRINT(".\Listings\answering device.m51") RAMSIZE(256) 
