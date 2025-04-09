@@ -43,11 +43,11 @@ void main()
 					easy_button();	//检测按下的案件，存入disp_now中，此行可保证这个条件语句只被执行一次
 					display(disp_now, 1); //检测完按键按下直接显示
 					BBS = 2;	//蜂鸣器响两秒
-					gogogo = 5; //十秒倒计时
+					gogogo = 10; //十秒倒计时
 				}
 				else if(disp_now != 0X88) // 表示按键按下并记录完成，进入下一步，开始十秒倒计时
 				{
-					display(disp_now, 1);      
+					//display(disp_now, 1);      
 					if(gogogo > 0 && gogogo <= 10)
 					{
 						display(num_seg[gogogo-1],2);
@@ -59,7 +59,7 @@ void main()
 						break;
 					}
 				}
-				delay(500000)
+				//delay(500);
 			}
 		}
 	}
