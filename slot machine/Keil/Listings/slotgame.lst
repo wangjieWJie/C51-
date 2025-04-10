@@ -1,0 +1,42 @@
+C51 COMPILER V9.60.7.0   SLOTGAME                                                          04/11/2025 00:29:57 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE SLOTGAME
+OBJECT MODULE PLACED IN .\Objects\slotgame.obj
+COMPILER INVOKED BY: D:\My_App\Keil C51\C51\BIN\C51.EXE slotgame.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\L
+                    -istings\slotgame.lst) TABS(2) OBJECT(.\Objects\slotgame.obj)
+
+line level    source
+
+   1          //slot game 老虎机相关函数
+   2          #include <reg52.h>
+   3          #include <stdlib.h>
+   4          #include "all_x.h"
+   5          
+   6          uint wj_rand()  //生成随机数
+   7          {
+   8   1          uint random_nm;
+   9   1          uchar low;
+  10   1                 
+  11   1          //high = TH0;  //利用定时器的不断变换的高低八位来随机生成随机数
+  12   1          low = TL0;    //定时器模式二高八位为自动重载值，所以只能用低八位了
+  13   1          srand(low);
+  14   1          random_nm = rand() % 7;  //生成0-6之间的随机数
+  15   1       
+  16   1          return random_nm;   //返回生成的随机数
+  17   1      }
+  18            
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     22    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

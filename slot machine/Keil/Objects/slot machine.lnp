@@ -1,4 +1,7 @@
 ".\Objects\STARTUP.obj",
-".\Objects\coco.obj" 
+".\Objects\coco.obj",
+".\Objects\LCD.obj",
+".\Objects\stopwatch.obj",
+".\Objects\slotgame.obj" 
 TO ".\Objects\slot machine" 
 PRINT(".\Listings\slot machine.m51") RAMSIZE(256) 
