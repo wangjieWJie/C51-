@@ -1,0 +1,4 @@
+".\Objects\STARTUP.obj",
+".\Objects\coco.obj" 
+TO ".\Objects\slot machine" 
+PRINT(".\Listings\slot machine.m51") RAMSIZE(256) 
