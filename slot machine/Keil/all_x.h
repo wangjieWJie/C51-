@@ -28,7 +28,7 @@ void LcdGotoXY(uchar line,uchar column);	//LCD定位光标
 void LcdPrintStr(uchar *str);	//LCD写入&显示字符串
 void LcdOff();
 void LcdOn();
-void LcdInit();	//LCD初始化
+void LcdInit();   //初始化液晶屏
 void LcdShowInit(uchar *str_1, uchar Y, uchar X);	//LCD显示总控，输入位置、字符串，显示在LCD规定的位置
 
 
@@ -42,6 +42,19 @@ void timing();   //秒表的总控函数
 void update_time(); //每次执行都会让秒加一，连带着分钟和小时变化
 
 extern uchar str_num[16];  //总时间显示，coco.c和stopwatch.c都要用
+
+
+//Slotgame
+uint wj_rand(); 	//生成随机数
+void slotgame();  //老虎机游戏总控
+void gaming();  //进行游戏
+void start_game();  //启动初始化游戏
+void int_timer1();     //定时器1的初始化
+
+
+
+
+
 
 
 

@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   LCD                                                               04/13/2025 01:33:34 PAGE 1   
+C51 COMPILER V9.60.7.0   LCD                                                               04/13/2025 16:45:25 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE LCD
@@ -62,7 +62,7 @@ line level    source
   52   1      }
   53          
   54          
-C51 COMPILER V9.60.7.0   LCD                                                               04/13/2025 01:33:34 PAGE 2   
+C51 COMPILER V9.60.7.0   LCD                                                               04/13/2025 16:45:25 PAGE 2   
 
   55          void LcdInit()   //≥ı ºªØ“∫æß∆¡
   56          {

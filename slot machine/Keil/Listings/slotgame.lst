@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   SLOTGAME                                                          04/13/2025 01:33:34 PAGE 1   
+C51 COMPILER V9.60.7.0   SLOTGAME                                                          04/13/2025 16:46:28 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE SLOTGAME
@@ -13,27 +13,165 @@ line level    source
    3          #include <stdlib.h>
    4          #include "all_x.h"
    5          
-   6          uint wj_rand()  //生成随机数
-   7          {
-   8   1          uint random_nm;
-   9   1          uchar low;
-  10   1                 
-  11   1          //high = TH0;  //利用定时器的不断变换的高低八位来随机生成随机数
-  12   1          low = TL0;    //定时器模式二高八位为自动重载值，所以只能用低八位了
-  13   1          srand(low);
-  14   1          random_nm = rand() % 7;  //生成0-6之间的随机数
-  15   1       
-  16   1          return random_nm;   //返回生成的随机数
-  17   1      }
-  18            
+   6          
+   7          uint count1 = 0;   //定时器1计数器
+   8          
+   9          uchar Lucky_alphabet[5] = "XXXXX";
+  10          uchar if_start = 'N';    //游戏是否 已经开始，是Y 没开始N
+  11          uchar i = 0;
+  12          
+  13          
+  14          void slotgame()  //老虎机游戏总控
+  15          {
+  16   1        LcdShowInit("Top score:000000", 1, 0);
+  17   1        
+  18   1          while(now_mod == 'G')  //点击右键R开始游戏，左键L退出
+  19   1          {     
+  20   2            get_button(5);   //检测按键，以便于暂停或者退出，或者将时间pin在第一行
+  21   2            if(now_button == 'l')  //退出当前模式
+  22   2            {
+  23   3              now_mod = 'g';    //将状态调整到上一个状态
+  24   3              now_button = 'n';   //恢复按键状态
+  25   3              break;
+  26   3            }
+  27   2            
+  28   2             
+  29   2            else if(now_button == 'r') //   暂停/开始游戏
+  30   2            {
+  31   3              switch(if_start)
+  32   3              {
+  33   4                case 'N':        //如果此时游戏未开始
+  34   4                  start_game();
+  35   4                  break;
+  36   4                
+  37   4                case 'Y':        //如果此时游戏已经开始
+  38   4                  gaming();
+  39   4                  break;
+  40   4              }
+  41   3              
+  42   3            }     
+  43   2          }
+  44   1      
+  45   1      }
+  46          
+  47          void Timer1_ISR() interrupt 3      //定时器1中断
+  48          {
+  49   1        TH0 = 0x4C;         // 手动重装初值
+  50   1        TL0 = 0x00;
+  51   1        if(++count1 >= 20)  // 50ms×20=1秒
+  52   1        {
+  53   2          for(i=0; i<3; i++)
+  54   2          {
+C51 COMPILER V9.60.7.0   SLOTGAME                                                          04/13/2025 16:46:28 PAGE 2   
+
+  55   3            Lucky_alphabet[i] = 'A' + wj_rand();
+  56   3          }
+  57   2          
+  58   2          
+  59   2          count1 = 0;
+  60   2        }
+  61   1        
+  62   1      }
+  63          
+  64          void start_game()  //启动初始化游戏
+  65          {
+  66   1        LcdShowInit("Your Lucky:XXXXX", 2, 0);
+  67   1        while(1)
+  68   1        {
+  69   2          get_button(6);
+  70   2          
+  71   2          if(now_button == 'l')  //退出当前模式
+  72   2          {
+  73   3            now_mod = 'g';    
+  74   3            now_button = 'n';   //恢复按键状态
+  75   3            break;
+  76   3          }
+  77   2          else if(now_button == 'r')  //正式启动游戏
+  78   2          {
+  79   3            if_start = 'Y';     //游戏状态切换到进行中
+  80   3            now_button = 'n';   //恢复按键状态
+  81   3            break;
+  82   3          } 
+  83   2        }
+  84   1      
+  85   1      }
+  86          
+  87          
+  88          
+  89          
+  90          void gaming()    //进行游戏
+  91          {
+  92   1        TR1 = 1;            // 开启定时器1
+  93   1        while(1)
+  94   1        {
+  95   2          get_button(6);
+  96   2          if(now_button == 'l')  //退出当前模式
+  97   2          {
+  98   3            now_mod = 'g';    
+  99   3            now_button = 'n';   //恢复按键状态
+ 100   3            break;
+ 101   3          }
+ 102   2          else if(now_button == 'r')  //游戏缓缓结束，显示分数
+ 103   2          {
+ 104   3            
+ 105   3            
+ 106   3            
+ 107   3            
+ 108   3            now_button = 'n';   //恢复按键状态
+ 109   3            break;
+ 110   3          } 
+ 111   2        }
+ 112   1        
+ 113   1      }
+ 114          
+ 115          
+ 116          void int_timer1()     //定时器1的初始化
+C51 COMPILER V9.60.7.0   SLOTGAME                                                          04/13/2025 16:46:28 PAGE 3   
+
+ 117          {
+ 118   1          // 模式配置（不影响定时器0的设置）
+ 119   1          TMOD &= 0x0F;       // 清除T1配置位
+ 120   1          TMOD |= 0x10;       // 设置模式1
+ 121   1          
+ 122   1           // 计算50ms定时初值（11.0592MHz）
+ 123   1          TH1 = 0x4C;         // 高位初值（19456/256=0x4C）
+ 124   1          TL1 = 0x00;         // 初始值（11.0592MHz晶振计算）[5](@ref)
+ 125   1          
+ 126   1          // 中断配置
+ 127   1          ET1 = 1;            // 开启定时器1中断
+ 128   1          TR1 = 0;            // 暂时关闭定时器1
+ 129   1        
+ 130   1          //EA = 1;         // 开启全局中断,定时器0到是已经开启过了
+ 131   1      
+ 132   1      }
+ 133          
+ 134          
+ 135          
+ 136          
+ 137          uint wj_rand()  //生成随机数
+ 138          {
+ 139   1          uint random_nm;
+ 140   1          uchar low, high;
+ 141   1                 
+ 142   1          high = TH1;  //利用定时器的不断变换的高低八位来随机生成随机数
+ 143   1          low = TL1;    //定时器低八位
+ 144   1          srand(low<<8 | high);    //创意修改，让高位成为低位，低位成为高位，使得没次调用时，srand相差更大
+ 145   1          random_nm = rand() % 3;  //生成0-2之间的随机数
+ 146   1       
+ 147   1          return random_nm;   //返回生成的随机数
+ 148   1      }
+ 149            
+ 150          
+ 151          
+ 152          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     22    ----
-   CONSTANT SIZE    =   ----    ----
+   CODE SIZE        =    289    ----
+   CONSTANT SIZE    =     34    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =   ----    ----
+   DATA SIZE        =      9    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.

@@ -7,6 +7,8 @@ sbit down = P2^4;		//ÏÂÒ»¸ö
 sbit left = P2^5;		//ºóÍË
 sbit right = P2^6;	//Ç°½ø
 
+sbit LED = P1^0;
+
 uchar now_button = 'n';	//n±íÊ¾µ±Ç°Î´°´ÏÂ£» u¡¢d¡¢l¡¢r ·Ö±ğ±íÊ¾ÉÏ¡¢ÏÂ¡¢Ç°½ø¡¢ºóÍË
 uchar now_mod = 't';    //µ±Ç°¹¦ÄÜÑ¡Ôñ£ºt¼ÆÊ±Æ÷µÄÑ¡Ôñ½çÃæ £¬»òÕßgÀÏ»¢»úµÄÑ¡Ôñ½çÃæ£¬T¼ÆÊ±Æ÷ÔËĞĞ½çÃæ £¬»òÕßGÀÏ»¢»úµÄÔËĞĞ½çÃæ
 
@@ -17,14 +19,16 @@ uchar* select_g = "select:slot game";
 
 void main()
 { 
-	uchar* str2 =    "  <back    >ok  ";
+	uchar* str2 =    " back:<    ok:> ";
 	
 	while(1)  // ×¼±¸¿ªÊ¼ÓÎÏ·
 	{
-		LcdInit();	
+		LcdInit();   //³õÊ¼»¯Òº¾§ÆÁ
 		LcdShowInit(select_t, 1, 0);	//ÏÔÊ¾³õÊ¼Éè¶¨µÄÎÄ±¾
 		LcdShowInit(str2, 2, 0);
-		int_timer0(); //³õÊ¼»¯¶¨Ê±Æ÷0ÎªÄ£Ê½¶ş
+		int_timer0(); 	//³õÊ¼»¯¶¨Ê±Æ÷0ÎªÄ£Ê½2
+		int_timer1();   //³õÊ¼»¯¶¨Ê±Æ÷1ÎªÄ£Ê½1
+
 
 		while(1)
 		{
@@ -36,17 +40,21 @@ void main()
 			{
 				switch(now_mod)
 				{
-					case 'T':
+					case 'T':  //½øÈëÃë±í
 						TR0 = 1;        // ¿ªÆô¶¨Ê±Æ÷0
+						ET0 = 1;        // ÔÊĞí¶¨Ê±Æ÷0ÖĞ¶Ï
 						timing();				//Ãë±íÄ£Ê½
 					
+						ET0 = 0;        // ½ûÖ¹¶¨Ê±Æ÷0ÖĞ¶Ï£¬½ÚÔ¼×ÊÔ´
 						LcdShowInit(select_t, 1, 0);	//ÍË³öÃë±íÄ£Ê½Ê±ÖØÖÃÆğÊ¼½çÃæ
 						LcdShowInit(str2, 2, 0);
-
 						break;
 					
-					case 'G':
-						
+					case 'G':  //½øÈëÓÎÏ·
+						slotgame();
+					
+						LcdShowInit(select_t, 1, 0);	//ÍË³öÓÎÏ·Ä£Ê½Ê±ÖØÖÃÆğÊ¼½çÃæ
+						LcdShowInit(str2, 2, 0);					
 						break;
 				}
 			}
@@ -70,32 +78,32 @@ void get_button(uint dead)	//Ã¿´Îµ÷ÓÃ¼ì²âÄÄ¸ö°´¼ü±»°´ÏÂ,dead²ÎÊıÓÃÓÚÑ¡ÔñÊÇ·ñÒªËÀ
 			if(up == 0 && down == 1 && left == 1 && right == 1)
 			{
 				now_button = 'u';
-				P1 = 0XFE; //Ö»×÷Îª²âÊÔÊ¹ÓÃ
+				LED = 0; //Ö»×÷Îª²âÊÔÊ¹ÓÃ
 				break;
 			}		
 			else if(up == 1 && down == 0 && left == 1 && right == 1)
 			{
 				now_button = 'd';
-				P1 = 0XFD; //Ö»×÷Îª²âÊÔÊ¹ÓÃ
+				LED = 0; //Ö»×÷Îª²âÊÔÊ¹ÓÃ
 				break;
 			}
 			else if(up == 1 && down == 1 && left == 0 && right == 1)
 			{
 				now_button = 'l';
-				P1 = 0XFB; //Ö»×÷Îª²âÊÔÊ¹ÓÃ
+				LED = 0; //Ö»×÷Îª²âÊÔÊ¹ÓÃ
 				break;
 			}
 			else if(up == 1 && down == 1 && left == 1 && right == 0)
 			{
 				now_button = 'r';
-				P1 = 0XF7; //Ö»×÷Îª²âÊÔÊ¹ÓÃ
+				LED = 0; //Ö»×÷Îª²âÊÔÊ¹ÓÃ
 				break;
 			}
 		}
 		if(dead != 1){break;}  //Ö»ÓĞdeadµÈÓÚÒ»²ÅÄÜËÀÑ­»·
 	}
 	while(!(up && down  && left && right)){};   // µ±Ã¿¸ö°´¼ü¶¼Ì§ÆğÊ±²ÅÄÜ³öÈ¥½øĞĞÏÂÒ»²½
-	P1 = 0XFF;
+	LED = 1;
 	
 }
 	
@@ -127,7 +135,7 @@ void change_mod()   //ÓÃÓÚÔÚ¿ªÊ¼½çÃæ¸ü»»Ä£Ê½,ËÀÑ­»·£¬Ö±µ½°´ÏÂÒ»¸ö°´¼ü£¨Ã¿´ÎÏìÓ¦Ò
 			switch(now_mod)
 			{
 				case 'g':
-					LcdShowInit("Strat:>   Back:<", 1, 0);
+					LcdShowInit("Strat:>   Back:<", 2, 0);
 					now_mod -= 32;   //Ğ¡Ğ´×ÖÄ¸¼Ó32±ä³É´óĞ´×ÖÄ¸G
 					break;
 				case 't':
