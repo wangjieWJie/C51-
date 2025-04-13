@@ -19,7 +19,8 @@ void LcdShowInit(uchar *str_1, uchar Y, uchar X);
 void keypad_scan();
 uchar int_str(uchar int_num);
 void fix_str_num();
-
+void del_one_num();
+void clear();
 
 sbit LcdRs_P  = P2^0;		//LCD数据1/命令0   
 sbit LcdRw_P  = P2^1;		//LCD读/写
@@ -47,7 +48,7 @@ uchar str_num[16];     // 第二行的电话号码
 void main()
 {
 	uchar* str1 = "  ZK2022121182  ";
-	uchar* str2 = " Welcome to TELE";
+	uchar* str2 = " Welcome to TELE";  // Press NumKey  :
 	
 	uint i = 0;
 	for(;i<16;i++)   // 初始化str_num为全空格
@@ -65,15 +66,26 @@ void main()
 		{
 			P1 = 0X7F;	 //以防万一加一个初始化P1	
 			keypad_scan();			//这是个找数死循环
-			if(num_now != 88)  // 记录到有新数字之后添加到数组的最后一位
+			if(num_now != 88)
 			{
-				fix_str_num();
+				if(num_now!=12 &&	num_now!=11)  // 记录到有新数字之后添加到数组的最后一位
+				{
+					fix_str_num();  //前移一位添加一个新数字
+				}
+				else if(num_now == 12)   //点击#删除一位数字
+				{
+					del_one_num();
+				}
+				else if(num_now == 11)  //点击*清空数字
+				{
+					clear();
+				}
+				LcdShowInit(str_num, 1, 0);
+
+				if(P3_0 == 0){break;}   // 由于找数是个死循环，所以这个不起作用，就这样吧，不想写了
+			
+				DelayMs(1);
 			}
-			LcdShowInit(str_num, 1, 0);
-			
-			if(P3_0 == 0){break;}   // 由于找数是个死循环，所以这个不起作用，就这样吧，不想写了
-			
-			DelayMs(1);
 		}
 	}
 }
@@ -267,4 +279,22 @@ void fix_str_num()   // 将新的数字添加到数组的最后一位，然后将之前的所有位数前移
 
 }
 
+void del_one_num()   //删除一位最低位数字
+{
+	uint i;
+	for(i = 15;i>0;i--)
+	{
+		str_num[i] = str_num[i-1];   // 将数组数据向后挪一位
+	}
+	str_num[0] = ' ';  //第一位清空	
+}
 
+
+void clear()   //清空所有数字
+{
+	uint i = 0;
+	for(;i<16;i++)   // 初始化str_num为全空格
+	{
+		str_num[i] = 32;
+	}
+}
