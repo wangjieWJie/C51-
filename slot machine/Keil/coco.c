@@ -1,15 +1,14 @@
 #include "all_x.h"
 #include <reg52.h>
+#include <intrins.h>
 
-sbit up = P2^3;	//ÉÏÒ»¸ö
-sbit down = P2^4;	//ÏÂÒ»¸ö
-sbit left = P2^5;	//ºóÍË
+sbit up = P2^3;			//ÉÏÒ»¸ö
+sbit down = P2^4;		//ÏÂÒ»¸ö
+sbit left = P2^5;		//ºóÍË
 sbit right = P2^6;	//Ç°½ø
 
-uint time_counter = 0;   //¶¨Ê±Æ÷µÄ¼ÆÊıÆ÷£¬Ã¿¼Ç20´Î±íÊ¾¹ıÁË1Ãë£¨50ms*20 = 1s£©
-
 uchar now_button = 'n';	//n±íÊ¾µ±Ç°Î´°´ÏÂ£» u¡¢d¡¢l¡¢r ·Ö±ğ±íÊ¾ÉÏ¡¢ÏÂ¡¢Ç°½ø¡¢ºóÍË
-uchar now_mod = 't';    //µ±Ç°¹¦ÄÜÑ¡Ôñ£ºt¼ÆÊ±Æ÷ £¬»òÕßgÀÏ»¢»ú
+uchar now_mod = 't';    //µ±Ç°¹¦ÄÜÑ¡Ôñ£ºt¼ÆÊ±Æ÷µÄÑ¡Ôñ½çÃæ £¬»òÕßgÀÏ»¢»úµÄÑ¡Ôñ½çÃæ£¬T¼ÆÊ±Æ÷ÔËĞĞ½çÃæ £¬»òÕßGÀÏ»¢»úµÄÔËĞĞ½çÃæ
 
 uchar* select_t = "select:stopwatch";  //Æô¶¯Éè±¸ÏÔÊ¾Ä£Ê½Ñ¡Ôñ£ºÃë±í»òÕßÀÏ»¢»úÓÎÏ·
 uchar* select_g = "select:slot game";
@@ -20,7 +19,6 @@ void main()
 { 
 	uchar* str2 =    "  <back    >ok  ";
 	
-	
 	while(1)  // ×¼±¸¿ªÊ¼ÓÎÏ·
 	{
 		LcdInit();	
@@ -30,60 +28,87 @@ void main()
 
 		while(1)
 		{
-			change_mod();
+			if(now_mod=='t'|| now_mod=='g')  //Èç¹ûÔÚ¼ÓÔØ½çÃæ¾ÍÏÔÊ¾Ä£Ê½£¬ËÅ»úÇĞ»»»òÕß½øÈëÄ£Ê½
+			{
+				change_mod();    //Ä£Ê½ÇĞ»»
+			}
+			else if(now_mod=='T'|| now_mod=='G') //È·ÈÏ½øÈë½çÃæÖ®ºóµÄ¶«Î÷£¬ÆäÊµÕâÌõÑ¡ÔñÓï¾äÃ»±ØÒªĞ´£¬µ«ÊÇ¿ÉÒÔÆğ±£»¤³ÌĞòµÄ×÷ÓÃ
+			{
+				switch(now_mod)
+				{
+					case 'T':
+						TR0 = 1;        // ¿ªÆô¶¨Ê±Æ÷0
+						timing();				//Ãë±íÄ£Ê½
+					
+						LcdShowInit(select_t, 1, 0);	//ÍË³öÃë±íÄ£Ê½Ê±ÖØÖÃÆğÊ¼½çÃæ
+						LcdShowInit(str2, 2, 0);
+
+						break;
+					
+					case 'G':
+						
+						break;
+				}
+			}
+			
 		}
 
 	}
 }
 
 
-void Timer0_ISR() interrupt 1   // ¶¨Ê±Æ÷0µÄÖĞ¶Ï ,Ä£Ê½2ÎŞĞèÊÖ¶¯ÖØÔØTH0/TL0
-{
-    time_counter++;             // ÀÛ¼ÆÖĞ¶Ï´ÎÊı
-    
-    if(time_counter >= 10000)      // 10000´Î¡Á100¦Ìs=1000ms
-    {
-      time_counter = 0;
-		}
-}
 
 
-
-void get_button(uint dead)	//Ã¿´Îµ÷ÓÃ¼ì²âÄÄ¸ö°´¼ü±»°´ÏÂ,dead²ÎÊıÓÃÓÚÑ¡ÔñÊÇ·ñÒªËÀÑ­»·²éÕÒ°´¼ü£¬0·ñ1ÊÇ
+void get_button(uint dead)	//Ã¿´Îµ÷ÓÃ¼ì²âÄÄ¸ö°´¼ü±»°´ÏÂ,dead²ÎÊıÓÃÓÚÑ¡ÔñÊÇ·ñÒªËÀÑ­»·²éÕÒ°´¼ü£¬1ËÀÑ­»·£¬0²»Ö´ĞĞ £¬ÆäËûÕûÊı²»ËÀÑ­»·£¬´Ëº¯ÊıÓÃÍêÒ»¶¨Òª¼ÇµÃ»Ö¸´°´¼ü×´Ì¬£¬·ñÔò½«»áµ¼ÖÂ²»¿ÉÃèÊöµÄ´íÎó
 {
 	while(dead)
 	{
-		if(up == 0 && down == 1 && left == 1 && right == 1)
+		if(!(up&&down&&left&&right))  
 		{
-			now_button = 'u';
-			break;
-		}		
-		else if(up == 1 && down == 0 && left == 1 && right == 1)
-		{
-			now_button = 'd';
-			break;
+			_nop_();_nop_();_nop_();  // ¼òµ¥°´¼üÏû¶¶
+			
+			if(up == 0 && down == 1 && left == 1 && right == 1)
+			{
+				now_button = 'u';
+				P1 = 0XFE; //Ö»×÷Îª²âÊÔÊ¹ÓÃ
+				break;
+			}		
+			else if(up == 1 && down == 0 && left == 1 && right == 1)
+			{
+				now_button = 'd';
+				P1 = 0XFD; //Ö»×÷Îª²âÊÔÊ¹ÓÃ
+				break;
+			}
+			else if(up == 1 && down == 1 && left == 0 && right == 1)
+			{
+				now_button = 'l';
+				P1 = 0XFB; //Ö»×÷Îª²âÊÔÊ¹ÓÃ
+				break;
+			}
+			else if(up == 1 && down == 1 && left == 1 && right == 0)
+			{
+				now_button = 'r';
+				P1 = 0XF7; //Ö»×÷Îª²âÊÔÊ¹ÓÃ
+				break;
+			}
 		}
-		else if(up == 1 && down == 1 && left == 0 && right == 1)
-		{
-			now_button = 'l';
-			break;
-		}
-		else if(up == 1 && down == 1 && left == 1 && right == 0)
-		{
-			now_button = 'r';
-			break;
-		}
+		if(dead != 1){break;}  //Ö»ÓĞdeadµÈÓÚÒ»²ÅÄÜËÀÑ­»·
 	}
 	while(!(up && down  && left && right)){};   // µ±Ã¿¸ö°´¼ü¶¼Ì§ÆğÊ±²ÅÄÜ³öÈ¥½øĞĞÏÂÒ»²½
+	P1 = 0XFF;
+	
 }
 	
+
+
 
 void change_mod()   //ÓÃÓÚÔÚ¿ªÊ¼½çÃæ¸ü»»Ä£Ê½,ËÀÑ­»·£¬Ö±µ½°´ÏÂÒ»¸ö°´¼ü£¨Ã¿´ÎÏìÓ¦Ò»¸ö°´¼ü£¬»ØÍË¼üµ±×öÇ°½ø¼üÓÃ£©
 {
 	get_button(1); //¿ªÊ¼½çÃæËÀÑ­»·¾ÍºÃ
 	switch(now_button)
 	{
-		case 'u':
+		case 'u':                     //µã»÷ÉÏÏÂ¼üÇĞ»»Ä£Ê½£ºÃë±í»òÕßÀÏ»¢»ú
+		case 'd':											
 			if(now_mod == 't')
 			{
 				LcdShowInit(select_g, 1, 0);
@@ -95,21 +120,21 @@ void change_mod()   //ÓÃÓÚÔÚ¿ªÊ¼½çÃæ¸ü»»Ä£Ê½,ËÀÑ­»·£¬Ö±µ½°´ÏÂÒ»¸ö°´¼ü£¨Ã¿´ÎÏìÓ¦Ò
 				now_mod = 't';
 			}
 			break;
-		case 'd':
-			if(now_mod == 't')
-			{
-				LcdShowInit(select_g, 1, 0);
-				now_mod = 'g';
-			}
-			else
-			{
-				LcdShowInit(select_t, 1, 0);
-				now_mod = 't';
-			}
-			break;
-		case 'l':
-		case 'r':
 			
+			
+		case 'l':                   //µã»÷×óÓÒ¼ü½øÈëÄ£Ê½
+		case 'r':
+			switch(now_mod)
+			{
+				case 'g':
+					LcdShowInit("Strat:>   Back:<", 1, 0);
+					now_mod -= 32;   //Ğ¡Ğ´×ÖÄ¸¼Ó32±ä³É´óĞ´×ÖÄ¸G
+					break;
+				case 't':
+					LcdShowInit("Pause:U  Clear:D", 1, 0);
+					now_mod -= 32;  
+					break;
+			}
 			break;
 	}
 	now_button = 'n';  //Çå³ıµ±Ç°°´¼ü

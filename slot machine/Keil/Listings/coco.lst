@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   COCO                                                              04/11/2025 00:34:08 PAGE 1   
+C51 COMPILER V9.60.7.0   COCO                                                              04/13/2025 01:33:34 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE COCO
@@ -10,145 +10,173 @@ line level    source
 
    1          #include "all_x.h"
    2          #include <reg52.h>
-   3          
-   4          sbit up = P2^3; //ÉÏÒ»¸ö
-   5          sbit down = P2^4; //ÏÂÒ»¸ö
-   6          sbit left = P2^5; //ºóÍË
-   7          sbit right = P2^6;  //Ç°½ø
-   8          
-   9          uint time_counter = 0;   //¶¨Ê±Æ÷µÄ¼ÆÊıÆ÷£¬Ã¿¼Ç20´Î±íÊ¾¹ıÁË1Ãë£¨50ms*20 = 1s£©
-  10          
-  11          uchar now_button = 'n'; //n±íÊ¾µ±Ç°Î´°´ÏÂ£» u¡¢d¡¢l¡¢r ·Ö±ğ±íÊ¾ÉÏ¡¢ÏÂ¡¢Ç°½ø¡¢ºóÍË
-  12          uchar now_mod = 't';    //µ±Ç°¹¦ÄÜÑ¡Ôñ£ºt¼ÆÊ±Æ÷ £¬»òÕßgÀÏ»¢»ú
-  13          
-  14          uchar* select_t = "select:stopwatch";  //Æô¶¯Éè±¸ÏÔÊ¾Ä£Ê½Ñ¡Ôñ£ºÃë±í»òÕßÀÏ»¢»úÓÎÏ·
-  15          uchar* select_g = "select:slot game";
+   3          #include <intrins.h>
+   4          
+   5          sbit up = P2^3;     //ÉÏÒ»¸ö
+   6          sbit down = P2^4;   //ÏÂÒ»¸ö
+   7          sbit left = P2^5;   //ºóÍË
+   8          sbit right = P2^6;  //Ç°½ø
+   9          
+  10          uchar now_button = 'n'; //n±íÊ¾µ±Ç°Î´°´ÏÂ£» u¡¢d¡¢l¡¢r ·Ö±ğ±íÊ¾ÉÏ¡¢ÏÂ¡¢Ç°½ø¡¢ºóÍË
+  11          uchar now_mod = 't';    //µ±Ç°¹¦ÄÜÑ¡Ôñ£ºt¼ÆÊ±Æ÷µÄÑ¡Ôñ½çÃæ £¬»òÕßgÀÏ»¢»úµÄÑ¡Ôñ½çÃæ£¬T¼ÆÊ±Æ÷ÔËĞĞ½çÃæ £¬»òÕßG
+             -ÀÏ»¢»úµÄÔËĞĞ½çÃæ
+  12          
+  13          uchar* select_t = "select:stopwatch";  //Æô¶¯Éè±¸ÏÔÊ¾Ä£Ê½Ñ¡Ôñ£ºÃë±í»òÕßÀÏ»¢»úÓÎÏ·
+  14          uchar* select_g = "select:slot game";
+  15          
   16          
   17          
-  18          
-  19          void main()
-  20          { 
-  21   1        uchar* str2 =    "  <back    >ok  ";
-  22   1        
-  23   1        
-  24   1        while(1)  // ×¼±¸¿ªÊ¼ÓÎÏ·
-  25   1        {
-  26   2          LcdInit();  
-  27   2          LcdShowInit(select_t, 1, 0);  //ÏÔÊ¾³õÊ¼Éè¶¨µÄÎÄ±¾
-  28   2          LcdShowInit(str2, 2, 0);
-  29   2          int_timer0(); //³õÊ¼»¯¶¨Ê±Æ÷0ÎªÄ£Ê½¶ş
-  30   2      
-  31   2          while(1)
-  32   2          {
-  33   3            change_mod();
-  34   3          }
-  35   2      
-  36   2        }
-  37   1      }
-  38          
-  39          
-  40          void Timer0_ISR() interrupt 1   // ¶¨Ê±Æ÷0µÄÖĞ¶Ï ,Ä£Ê½2ÎŞĞèÊÖ¶¯ÖØÔØTH0/TL0
-  41          {
-  42   1          time_counter++;             // ÀÛ¼ÆÖĞ¶Ï´ÎÊı
-  43   1          
-  44   1          if(time_counter >= 10000)      // 10000´Î¡Á100¦Ìs=1000ms
-  45   1          {
-  46   2            time_counter = 0;
-  47   2          }
-  48   1      }
-  49          
-  50          
-  51          
-  52          void get_button(uint dead)  //Ã¿´Îµ÷ÓÃ¼ì²âÄÄ¸ö°´¼ü±»°´ÏÂ,dead²ÎÊıÓÃÓÚÑ¡ÔñÊÇ·ñÒªËÀÑ­»·²éÕÒ°´¼ü£¬0·ñ1ÊÇ
-  53          {
-  54   1        while(dead)
-C51 COMPILER V9.60.7.0   COCO                                                              04/11/2025 00:34:08 PAGE 2   
+  18          void main()
+  19          { 
+  20   1        uchar* str2 =    "  <back    >ok  ";
+  21   1        
+  22   1        while(1)  // ×¼±¸¿ªÊ¼ÓÎÏ·
+  23   1        {
+  24   2          LcdInit();  
+  25   2          LcdShowInit(select_t, 1, 0);  //ÏÔÊ¾³õÊ¼Éè¶¨µÄÎÄ±¾
+  26   2          LcdShowInit(str2, 2, 0);
+  27   2          int_timer0(); //³õÊ¼»¯¶¨Ê±Æ÷0ÎªÄ£Ê½¶ş
+  28   2      
+  29   2          while(1)
+  30   2          {
+  31   3            if(now_mod=='t'|| now_mod=='g')  //Èç¹ûÔÚ¼ÓÔØ½çÃæ¾ÍÏÔÊ¾Ä£Ê½£¬ËÅ»úÇĞ»»»òÕß½øÈëÄ£Ê½
+  32   3            {
+  33   4              change_mod();    //Ä£Ê½ÇĞ»»
+  34   4            }
+  35   3            else if(now_mod=='T'|| now_mod=='G') //È·ÈÏ½øÈë½çÃæÖ®ºóµÄ¶«Î÷£¬ÆäÊµÕâÌõÑ¡ÔñÓï¾äÃ»±ØÒªĞ´£¬µ«ÊÇ¿ÉÒÔÆğ±£»¤
+             -³ÌĞòµÄ×÷ÓÃ
+  36   3            {
+  37   4              switch(now_mod)
+  38   4              {
+  39   5                case 'T':
+  40   5                  TR0 = 1;        // ¿ªÆô¶¨Ê±Æ÷0
+  41   5                  timing();       //Ãë±íÄ£Ê½
+  42   5                
+  43   5                  LcdShowInit(select_t, 1, 0);  //ÍË³öÃë±íÄ£Ê½Ê±ÖØÖÃÆğÊ¼½çÃæ
+  44   5                  LcdShowInit(str2, 2, 0);
+  45   5      
+  46   5                  break;
+  47   5                
+  48   5                case 'G':
+  49   5                  
+  50   5                  break;
+  51   5              }
+  52   4            }
+C51 COMPILER V9.60.7.0   COCO                                                              04/13/2025 01:33:34 PAGE 2   
 
-  55   1        {
-  56   2          if(up == 0 && down == 1 && left == 1 && right == 1)
-  57   2          {
-  58   3            now_button = 'u';
-  59   3            break;
-  60   3          }   
-  61   2          else if(up == 1 && down == 0 && left == 1 && right == 1)
-  62   2          {
-  63   3            now_button = 'd';
-  64   3            break;
-  65   3          }
-  66   2          else if(up == 1 && down == 1 && left == 0 && right == 1)
+  53   3            
+  54   3          }
+  55   2      
+  56   2        }
+  57   1      }
+  58          
+  59          
+  60          
+  61          
+  62          void get_button(uint dead)  //Ã¿´Îµ÷ÓÃ¼ì²âÄÄ¸ö°´¼ü±»°´ÏÂ,dead²ÎÊıÓÃÓÚÑ¡ÔñÊÇ·ñÒªËÀÑ­»·²éÕÒ°´¼ü£¬1ËÀÑ­»·£¬0²»
+             -Ö´ĞĞ £¬ÆäËûÕûÊı²»ËÀÑ­»·£¬´Ëº¯ÊıÓÃÍêÒ»¶¨Òª¼ÇµÃ»Ö¸´°´¼ü×´Ì¬£¬·ñÔò½«»áµ¼ÖÂ²»¿ÉÃèÊöµÄ´íÎó
+  63          {
+  64   1        while(dead)
+  65   1        {
+  66   2          if(!(up&&down&&left&&right))  
   67   2          {
-  68   3            now_button = 'l';
-  69   3            break;
-  70   3          }
-  71   2          else if(up == 1 && down == 1 && left == 1 && right == 0)
-  72   2          {
-  73   3            now_button = 'r';
-  74   3            break;
-  75   3          }
-  76   2        }
-  77   1        while(!(up && down  && left && right)){};   // µ±Ã¿¸ö°´¼ü¶¼Ì§ÆğÊ±²ÅÄÜ³öÈ¥½øĞĞÏÂÒ»²½
-  78   1      }
-  79            
-  80          
-  81          void change_mod()   //ÓÃÓÚÔÚ¿ªÊ¼½çÃæ¸ü»»Ä£Ê½,ËÀÑ­»·£¬Ö±µ½°´ÏÂÒ»¸ö°´¼ü£¨Ã¿´ÎÏìÓ¦Ò»¸ö°´¼ü£¬»ØÍË¼üµ±×öÇ°½ø¼üÓ
+  68   3            _nop_();_nop_();_nop_();  // ¼òµ¥°´¼üÏû¶¶
+  69   3            
+  70   3            if(up == 0 && down == 1 && left == 1 && right == 1)
+  71   3            {
+  72   4              now_button = 'u';
+  73   4              P1 = 0XFE; //Ö»×÷Îª²âÊÔÊ¹ÓÃ
+  74   4              break;
+  75   4            }   
+  76   3            else if(up == 1 && down == 0 && left == 1 && right == 1)
+  77   3            {
+  78   4              now_button = 'd';
+  79   4              P1 = 0XFD; //Ö»×÷Îª²âÊÔÊ¹ÓÃ
+  80   4              break;
+  81   4            }
+  82   3            else if(up == 1 && down == 1 && left == 0 && right == 1)
+  83   3            {
+  84   4              now_button = 'l';
+  85   4              P1 = 0XFB; //Ö»×÷Îª²âÊÔÊ¹ÓÃ
+  86   4              break;
+  87   4            }
+  88   3            else if(up == 1 && down == 1 && left == 1 && right == 0)
+  89   3            {
+  90   4              now_button = 'r';
+  91   4              P1 = 0XF7; //Ö»×÷Îª²âÊÔÊ¹ÓÃ
+  92   4              break;
+  93   4            }
+  94   3          }
+  95   2          if(dead != 1){break;}  //Ö»ÓĞdeadµÈÓÚÒ»²ÅÄÜËÀÑ­»·
+  96   2        }
+  97   1        while(!(up && down  && left && right)){};   // µ±Ã¿¸ö°´¼ü¶¼Ì§ÆğÊ±²ÅÄÜ³öÈ¥½øĞĞÏÂÒ»²½
+  98   1        P1 = 0XFF;
+  99   1        
+ 100   1      }
+ 101            
+ 102          
+ 103          
+ 104          
+ 105          void change_mod()   //ÓÃÓÚÔÚ¿ªÊ¼½çÃæ¸ü»»Ä£Ê½,ËÀÑ­»·£¬Ö±µ½°´ÏÂÒ»¸ö°´¼ü£¨Ã¿´ÎÏìÓ¦Ò»¸ö°´¼ü£¬»ØÍË¼üµ±×öÇ°½ø¼üÓ
              -Ã£©
-  82          {
-  83   1        get_button(1); //¿ªÊ¼½çÃæËÀÑ­»·¾ÍºÃ
-  84   1        switch(now_button)
-  85   1        {
-  86   2          case 'u':
-  87   2            if(now_mod == 't')
-  88   2            {
-  89   3              LcdShowInit(select_g, 1, 0);
-  90   3              now_mod = 'g';
-  91   3            }
-  92   2            else
-  93   2            {
-  94   3              LcdShowInit(select_t, 1, 0);
-  95   3              now_mod = 't';
-  96   3            }
-  97   2            break;
-  98   2          case 'd':
-  99   2            if(now_mod == 't')
- 100   2            {
- 101   3              LcdShowInit(select_g, 1, 0);
- 102   3              now_mod = 'g';
- 103   3            }
- 104   2            else
- 105   2            {
- 106   3              LcdShowInit(select_t, 1, 0);
- 107   3              now_mod = 't';
- 108   3            }
- 109   2            break;
- 110   2          case 'l':
- 111   2          case 'r':
- 112   2            
- 113   2            break;
- 114   2        }
- 115   1        now_button = 'n';  //Çå³ıµ±Ç°°´¼ü
-C51 COMPILER V9.60.7.0   COCO                                                              04/11/2025 00:34:08 PAGE 3   
+ 106          {
+ 107   1        get_button(1); //¿ªÊ¼½çÃæËÀÑ­»·¾ÍºÃ
+ 108   1        switch(now_button)
+ 109   1        {
+ 110   2          case 'u':                     //µã»÷ÉÏÏÂ¼üÇĞ»»Ä£Ê½£ºÃë±í»òÕßÀÏ»¢»ú
+ 111   2          case 'd':                     
+ 112   2            if(now_mod == 't')
+C51 COMPILER V9.60.7.0   COCO                                                              04/13/2025 01:33:34 PAGE 3   
 
- 116   1      }
- 117          
- 118          
- 119          
- 120          /*
- 121          
- 122          
- 123          */
- 124          
- 125          
- 126          
- 127          
- 128          
+ 113   2            {
+ 114   3              LcdShowInit(select_g, 1, 0);
+ 115   3              now_mod = 'g';
+ 116   3            }
+ 117   2            else
+ 118   2            {
+ 119   3              LcdShowInit(select_t, 1, 0);
+ 120   3              now_mod = 't';
+ 121   3            }
+ 122   2            break;
+ 123   2            
+ 124   2            
+ 125   2          case 'l':                   //µã»÷×óÓÒ¼ü½øÈëÄ£Ê½
+ 126   2          case 'r':
+ 127   2            switch(now_mod)
+ 128   2            {
+ 129   3              case 'g':
+ 130   3                LcdShowInit("Strat:>   Back:<", 1, 0);
+ 131   3                now_mod -= 32;   //Ğ¡Ğ´×ÖÄ¸¼Ó32±ä³É´óĞ´×ÖÄ¸G
+ 132   3                break;
+ 133   3              case 't':
+ 134   3                LcdShowInit("Pause:U  Clear:D", 1, 0);
+ 135   3                now_mod -= 32;  
+ 136   3                break;
+ 137   3            }
+ 138   2            break;
+ 139   2        }
+ 140   1        now_button = 'n';  //Çå³ıµ±Ç°°´¼ü
+ 141   1      }
+ 142          
+ 143          
+ 144          
+ 145          /*
+ 146          
+ 147          
+ 148          */
+ 149          
+ 150          
+ 151          
+ 152          
+ 153          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    234    ----
-   CONSTANT SIZE    =     51    ----
+   CODE SIZE        =    342    ----
+   CONSTANT SIZE    =     85    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =     10       3
+   DATA SIZE        =      8       3
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
