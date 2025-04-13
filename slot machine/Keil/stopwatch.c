@@ -43,7 +43,6 @@ void timing()
 			{
 				now_mod = 't';	 		//将状态调整到上一个状态
 				TR0 = 0;       			// 关闭定时器0，暂停计时，减少CPU消耗
-				now_button = 'n';  	//恢复按键状态
 				break;     					//停止当前循环
 			}
 			
@@ -72,7 +71,7 @@ void timing()
 				LcdShowInit(pin_str_num, 1, 0);
 			}
 			
-			now_button = 'n';  	//恢复按键状态
+			
 		}
 	
 }

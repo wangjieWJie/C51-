@@ -30,7 +30,8 @@ void LcdOff();
 void LcdOn();
 void LcdInit();   //初始化液晶屏
 void LcdShowInit(uchar *str_1, uchar Y, uchar X);	//LCD显示总控，输入位置、字符串，显示在LCD规定的位置
-
+void LCD_one_data(uchar a_data, uchar Y, uchar X);    //一次只写一个字
+	
 
 //StopWatch
 void int_timer0();	//定时器0初始化
@@ -50,7 +51,7 @@ void slotgame();  //老虎机游戏总控
 void gaming();  //进行游戏
 void start_game();  //启动初始化游戏
 void int_timer1();     //定时器1的初始化
-
+void speed_disp();   //可以调速的显示（只显示第二行最后五位）
 
 
 

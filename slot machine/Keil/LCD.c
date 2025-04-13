@@ -78,3 +78,14 @@ void LcdShowInit(uchar *str_1, uchar Y, uchar X)  // ²ÎÊı±íÊ¾¡¾ÊäÈë×Ö·û´®¡¢ÊäÈëĞ
 	LcdPrintStr(str_1);			//Ğ´Èë×Ö·û´®
 }
 
+void LCD_one_data(uchar a_data, uchar Y, uchar X)    //Ò»´ÎÖ»Ğ´Ò»¸ö×Ö
+{	
+	LcdGotoXY(Y,X);	    		//¶¨Î»¹â±ê		
+	LcdWriteData(a_data);		//Ğ´ÈëÒ»¸ö×Ö
+}
+	
+
+
+
+
+

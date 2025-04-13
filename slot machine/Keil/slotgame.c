@@ -6,8 +6,10 @@
 
 uint count1 = 0;   //定时器1计数器
 
+int speed0[5] = {100,150,200,250,300}; 	//在游戏开始时，每位的初始循环速度都应该不同，这里单独控制每一位的循环速度，达到丝滑效果，这个值是一直变化的
+int speed1[6] = {150,160,170,180,190,-1};		//用于赋给speed0的新值，第6位是标志位，1表示速度减，-1表示速度加，第六位以后表示加速度(migntianzainong)
+
 uchar Lucky_alphabet[5] = "XXXXX";
-uchar if_start = 'N';    //游戏是否 已经开始，是Y 没开始N
 uchar i = 0;
 
 
@@ -17,100 +19,75 @@ void slotgame()  //老虎机游戏总控
 	
 		while(now_mod == 'G')  //点击右键R开始游戏，左键L退出
 		{			
-			get_button(5);   //检测按键，以便于暂停或者退出，或者将时间pin在第一行
-			if(now_button == 'l')  //退出当前模式
+			get_button(5);   //检测按键，以便于开始或者退出
+			
+			if(now_button == 'l')  //刚进入模式，单击左键退出当前模式
 			{
 				now_mod = 'g';		//将状态调整到上一个状态
-				now_button = 'n';  	//恢复按键状态
 				break;
 			}
 			
-			 
-			else if(now_button == 'r') //   暂停/开始游戏
+			else if(now_button == 'r') 								//刚进入模式，单击右键开始游戏
 			{
-				switch(if_start)
-				{
-					case 'N':        //如果此时游戏未开始
-						start_game();
-						break;
-					
-					case 'Y':				 //如果此时游戏已经开始
-						gaming();
-						break;
-				}
-				
-			}			
-		}
-
+				TR1 = 1;            										// 开启定时器1，让后台开始随机产生随机字母
+				LcdShowInit("Your Lucky:XXXXX", 2, 0);  //奠定一下基础，先把不变的东西写上去
+				gaming();  															//游戏死循环，直到所有字母都停止随机并记完分数之后退出
+				break;
+			}				
+		}			
 }
+
+
 
 void Timer1_ISR() interrupt 3      //定时器1中断
 {
-	TH0 = 0x4C;         // 手动重装初值
+	TH0 = 0x04; ;         // 手动重装初值
   TL0 = 0x00;
-  if(++count1 >= 20)  // 50ms×20=1秒
+  if(++count1 >= 14)  // 每次70ms，count1最大值乘以70ms就是计时的毫秒数   70ms*14 = 0.98s
 	{
-		for(i=0; i<3; i++)
-		{
-			Lucky_alphabet[i] = 'A' + wj_rand();
-		}
-    
-		
 		count1 = 0;
 	}
 	
 }
 
-void start_game()  //启动初始化游戏
-{
-	LcdShowInit("Your Lucky:XXXXX", 2, 0);
-	while(1)
-	{
-		get_button(6);
-		
-		if(now_button == 'l')  //退出当前模式
-		{
-			now_mod = 'g';		
-			now_button = 'n';  	//恢复按键状态
-			break;
-		}
-		else if(now_button == 'r')  //正式启动游戏
-		{
-			if_start = 'Y';			//游戏状态切换到进行中
-			now_button = 'n';  	//恢复按键状态
-			break;
-		}	
-	}
-
-}
-
-
 
 
 void gaming()    //进行游戏
 {
-	TR1 = 1;            // 开启定时器1
-	while(1)
+	while(1)		//算了，开始游戏之后就不能退出了，不然一直检测按钮太卡了
 	{
-		get_button(6);
-		if(now_button == 'l')  //退出当前模式
+				
+		for(i=0; i<5; i++)   
 		{
-			now_mod = 'g';		
-			now_button = 'n';  	//恢复按键状态
-			break;
+			Lucky_alphabet[i] = 'A' + wj_rand();
 		}
-		else if(now_button == 'r')  //游戏缓缓结束，显示分数
-		{
-			
-			
-			
-			
-			now_button = 'n';  	//恢复按键状态
-			break;
-		}	
+		
+		speed_disp();
+		
+		for(i=0; i<5; i++){}
 	}
 	
 }
+
+
+void speed_disp()    //可以调速的显示（只显示第二行最后五位）
+{
+	for(i=0;i<5;i++)     //每位的调速
+	{
+		if(!(speed0[i]--)) { 
+			LCD_one_data(Lucky_alphabet[i], 2, i+11);
+			
+			speed0[i] = speed1[i];
+			
+			if(speed1[i] > 20)
+			{
+				speed1[i] = speed1[i] + (speed1[5]*20);  //速度越来越快
+			}
+		}
+	}
+}
+
+
 
 
 void int_timer1()     //定时器1的初始化
@@ -120,8 +97,8 @@ void int_timer1()     //定时器1的初始化
     TMOD |= 0x10;       // 设置模式1
     
 		 // 计算50ms定时初值（11.0592MHz）
-    TH1 = 0x4C;         // 高位初值（19456/256=0x4C）
-    TL1 = 0x00;         // 初始值（11.0592MHz晶振计算）[5](@ref)
+    TH1 = 0x04;         // 高位初值  65536 - 1024 = 64512；  64512 * 1.085069444us = 69,999.999971us = 70ms
+    TL1 = 0x00;         // 初始值								  12 / 11.0592MHZ = 1.08506944444us↑						
     
     // 中断配置
     ET1 = 1;            // 开启定时器1中断

@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   SLOTGAME                                                          04/13/2025 16:46:28 PAGE 1   
+C51 COMPILER V9.60.7.0   SLOTGAME                                                          04/14/2025 01:17:01 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE SLOTGAME
@@ -16,162 +16,142 @@ line level    source
    6          
    7          uint count1 = 0;   //定时器1计数器
    8          
-   9          uchar Lucky_alphabet[5] = "XXXXX";
-  10          uchar if_start = 'N';    //游戏是否 已经开始，是Y 没开始N
-  11          uchar i = 0;
-  12          
-  13          
-  14          void slotgame()  //老虎机游戏总控
-  15          {
-  16   1        LcdShowInit("Top score:000000", 1, 0);
-  17   1        
-  18   1          while(now_mod == 'G')  //点击右键R开始游戏，左键L退出
-  19   1          {     
-  20   2            get_button(5);   //检测按键，以便于暂停或者退出，或者将时间pin在第一行
-  21   2            if(now_button == 'l')  //退出当前模式
-  22   2            {
-  23   3              now_mod = 'g';    //将状态调整到上一个状态
-  24   3              now_button = 'n';   //恢复按键状态
-  25   3              break;
-  26   3            }
-  27   2            
-  28   2             
-  29   2            else if(now_button == 'r') //   暂停/开始游戏
-  30   2            {
-  31   3              switch(if_start)
-  32   3              {
-  33   4                case 'N':        //如果此时游戏未开始
-  34   4                  start_game();
-  35   4                  break;
-  36   4                
-  37   4                case 'Y':        //如果此时游戏已经开始
-  38   4                  gaming();
-  39   4                  break;
-  40   4              }
-  41   3              
-  42   3            }     
-  43   2          }
-  44   1      
-  45   1      }
-  46          
-  47          void Timer1_ISR() interrupt 3      //定时器1中断
-  48          {
-  49   1        TH0 = 0x4C;         // 手动重装初值
-  50   1        TL0 = 0x00;
-  51   1        if(++count1 >= 20)  // 50ms×20=1秒
-  52   1        {
-  53   2          for(i=0; i<3; i++)
-  54   2          {
-C51 COMPILER V9.60.7.0   SLOTGAME                                                          04/13/2025 16:46:28 PAGE 2   
+   9          int speed0[5] = {100,150,200,250,300};  //在游戏开始时，每位的初始循环速度都应该不同，这里单独控制每一位的
+             -循环速度，达到丝滑效果，这个值是一直变化的
+  10          int speed1[6] = {150,160,170,180,190,-1};   //用于赋给speed0的新值，最后一位是标志位，1表示速度减，-1表示速
+             -度加
+  11          
+  12          uchar Lucky_alphabet[5] = "XXXXX";
+  13          uchar i = 0;
+  14          
+  15          
+  16          void slotgame()  //老虎机游戏总控
+  17          {
+  18   1        LcdShowInit("Top score:000000", 1, 0);
+  19   1        
+  20   1          while(now_mod == 'G')  //点击右键R开始游戏，左键L退出
+  21   1          {     
+  22   2            get_button(5);   //检测按键，以便于开始或者退出
+  23   2            
+  24   2            if(now_button == 'l')  //刚进入模式，单击左键退出当前模式
+  25   2            {
+  26   3              now_mod = 'g';    //将状态调整到上一个状态
+  27   3              break;
+  28   3            }
+  29   2            
+  30   2            else if(now_button == 'r')                //刚进入模式，单击右键开始游戏
+  31   2            {
+  32   3              TR1 = 1;                                // 开启定时器1，让后台开始随机产生随机字母
+  33   3              LcdShowInit("Your Lucky:XXXXX", 2, 0);  //奠定一下基础，先把不变的东西写上去
+  34   3              gaming();                               //游戏死循环，直到所有字母都停止随机并记完分数之后退出
+  35   3              break;
+  36   3            }       
+  37   2          }     
+  38   1      }
+  39          
+  40          
+  41          
+  42          void Timer1_ISR() interrupt 3      //定时器1中断
+  43          {
+  44   1        TH0 = 0x04; ;         // 手动重装初值
+  45   1        TL0 = 0x00;
+  46   1        if(++count1 >= 14)  // 每次70ms，count1最大值乘以70ms就是计时的毫秒数   70ms*14 = 0.98s
+  47   1        {
+  48   2          count1 = 0;
+  49   2        }
+  50   1        
+  51   1      }
+  52          
+C51 COMPILER V9.60.7.0   SLOTGAME                                                          04/14/2025 01:17:01 PAGE 2   
 
-  55   3            Lucky_alphabet[i] = 'A' + wj_rand();
-  56   3          }
-  57   2          
-  58   2          
-  59   2          count1 = 0;
-  60   2        }
-  61   1        
-  62   1      }
-  63          
-  64          void start_game()  //启动初始化游戏
-  65          {
-  66   1        LcdShowInit("Your Lucky:XXXXX", 2, 0);
-  67   1        while(1)
-  68   1        {
-  69   2          get_button(6);
-  70   2          
-  71   2          if(now_button == 'l')  //退出当前模式
-  72   2          {
-  73   3            now_mod = 'g';    
-  74   3            now_button = 'n';   //恢复按键状态
-  75   3            break;
-  76   3          }
-  77   2          else if(now_button == 'r')  //正式启动游戏
-  78   2          {
-  79   3            if_start = 'Y';     //游戏状态切换到进行中
-  80   3            now_button = 'n';   //恢复按键状态
-  81   3            break;
-  82   3          } 
-  83   2        }
-  84   1      
-  85   1      }
-  86          
-  87          
-  88          
+  53          
+  54          
+  55          void gaming()    //进行游戏
+  56          {
+  57   1        while(1)    //算了，开始游戏之后就不能退出了，不然一直检测按钮太卡了
+  58   1        {
+  59   2              
+  60   2          for(i=0; i<5; i++)   
+  61   2          {
+  62   3            Lucky_alphabet[i] = 'A' + wj_rand();
+  63   3          }
+  64   2          
+  65   2          speed_disp();
+  66   2          
+  67   2          for(i=0; i<5; i++){}
+  68   2        }
+  69   1        
+  70   1      }
+  71          
+  72          
+  73          void speed_disp()    //可以调速的显示（只显示第二行最后五位）
+  74          {
+  75   1        for(i=0;i<5;i++)     //每位的调速
+  76   1        {
+  77   2          if(!(speed0[i]--)) { 
+  78   3            LCD_one_data(Lucky_alphabet[i], 2, i+11);
+  79   3            
+  80   3            speed0[i] = speed1[i];
+  81   3            
+  82   3            if(speed1[i] > 20)
+  83   3            {
+  84   4              speed1[i] = speed1[i] + (speed1[5]*20);  //速度越来越快
+  85   4            }
+  86   3          }
+  87   2        }
+  88   1      }
   89          
-  90          void gaming()    //进行游戏
-  91          {
-  92   1        TR1 = 1;            // 开启定时器1
-  93   1        while(1)
-  94   1        {
-  95   2          get_button(6);
-  96   2          if(now_button == 'l')  //退出当前模式
-  97   2          {
-  98   3            now_mod = 'g';    
-  99   3            now_button = 'n';   //恢复按键状态
- 100   3            break;
- 101   3          }
- 102   2          else if(now_button == 'r')  //游戏缓缓结束，显示分数
- 103   2          {
- 104   3            
- 105   3            
- 106   3            
- 107   3            
- 108   3            now_button = 'n';   //恢复按键状态
- 109   3            break;
- 110   3          } 
- 111   2        }
- 112   1        
- 113   1      }
- 114          
- 115          
- 116          void int_timer1()     //定时器1的初始化
-C51 COMPILER V9.60.7.0   SLOTGAME                                                          04/13/2025 16:46:28 PAGE 3   
+  90          
+  91          
+  92          
+  93          void int_timer1()     //定时器1的初始化
+  94          {
+  95   1          // 模式配置（不影响定时器0的设置）
+  96   1          TMOD &= 0x0F;       // 清除T1配置位
+  97   1          TMOD |= 0x10;       // 设置模式1
+  98   1          
+  99   1           // 计算50ms定时初值（11.0592MHz）
+ 100   1          TH1 = 0x04;         // 高位初值  65536 - 1024 = 64512；  64512 * 1.085069444us = 69,999.999971us = 70m
+             -s
+ 101   1          TL1 = 0x00;         // 初始值                 12 / 11.0592MHZ = 1.08506944444us↑           
+ 102   1          
+ 103   1          // 中断配置
+ 104   1          ET1 = 1;            // 开启定时器1中断
+ 105   1          TR1 = 0;            // 暂时关闭定时器1
+ 106   1        
+ 107   1          //EA = 1;         // 开启全局中断,定时器0到是已经开启过了
+ 108   1      
+ 109   1      }
+ 110          
+ 111          
+ 112          
+ 113          
+C51 COMPILER V9.60.7.0   SLOTGAME                                                          04/14/2025 01:17:01 PAGE 3   
 
- 117          {
- 118   1          // 模式配置（不影响定时器0的设置）
- 119   1          TMOD &= 0x0F;       // 清除T1配置位
- 120   1          TMOD |= 0x10;       // 设置模式1
- 121   1          
- 122   1           // 计算50ms定时初值（11.0592MHz）
- 123   1          TH1 = 0x4C;         // 高位初值（19456/256=0x4C）
- 124   1          TL1 = 0x00;         // 初始值（11.0592MHz晶振计算）[5](@ref)
- 125   1          
- 126   1          // 中断配置
- 127   1          ET1 = 1;            // 开启定时器1中断
- 128   1          TR1 = 0;            // 暂时关闭定时器1
- 129   1        
- 130   1          //EA = 1;         // 开启全局中断,定时器0到是已经开启过了
- 131   1      
- 132   1      }
- 133          
- 134          
- 135          
- 136          
- 137          uint wj_rand()  //生成随机数
- 138          {
- 139   1          uint random_nm;
- 140   1          uchar low, high;
- 141   1                 
- 142   1          high = TH1;  //利用定时器的不断变换的高低八位来随机生成随机数
- 143   1          low = TL1;    //定时器低八位
- 144   1          srand(low<<8 | high);    //创意修改，让高位成为低位，低位成为高位，使得没次调用时，srand相差更大
- 145   1          random_nm = rand() % 3;  //生成0-2之间的随机数
- 146   1       
- 147   1          return random_nm;   //返回生成的随机数
- 148   1      }
- 149            
- 150          
- 151          
- 152          
+ 114          uint wj_rand()  //生成随机数
+ 115          {
+ 116   1          uint random_nm;
+ 117   1          uchar low, high;
+ 118   1                 
+ 119   1          high = TH1;  //利用定时器的不断变换的高低八位来随机生成随机数
+ 120   1          low = TL1;    //定时器低八位
+ 121   1          srand(low<<8 | high);    //创意修改，让高位成为低位，低位成为高位，使得没次调用时，srand相差更大
+ 122   1          random_nm = rand() % 3;  //生成0-2之间的随机数
+ 123   1       
+ 124   1          return random_nm;   //返回生成的随机数
+ 125   1      }
+ 126            
+ 127          
+ 128          
+ 129          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    289    ----
+   CODE SIZE        =    304    ----
    CONSTANT SIZE    =     34    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =      9    ----
+   DATA SIZE        =     30    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.

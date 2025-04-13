@@ -1,1 +1,0 @@
-"coco.c" OPTIMIZE (8,SPEED) BROWSE INCDIR(all_x.h) DEBUG OBJECTEXTEND PRINT(.\Listings\coco.lst) TABS (2) OBJECT(.\Objects\coco.obj)

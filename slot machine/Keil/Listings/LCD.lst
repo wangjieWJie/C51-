@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   LCD                                                               04/13/2025 16:45:25 PAGE 1   
+C51 COMPILER V9.60.7.0   LCD                                                               04/14/2025 01:17:01 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE LCD
@@ -62,7 +62,7 @@ line level    source
   52   1      }
   53          
   54          
-C51 COMPILER V9.60.7.0   LCD                                                               04/13/2025 16:45:25 PAGE 2   
+C51 COMPILER V9.60.7.0   LCD                                                               04/14/2025 01:17:01 PAGE 2   
 
   55          void LcdInit()   //初始化液晶屏
   56          {
@@ -91,14 +91,25 @@ line level    source
   78   1        LcdPrintStr(str_1);     //写入字符串
   79   1      }
   80          
+  81          void LCD_one_data(uchar a_data, uchar Y, uchar X)    //一次只写一个字
+  82          { 
+  83   1        LcdGotoXY(Y,X);         //定位光标    
+  84   1        LcdWriteData(a_data);   //写入一个字
+  85   1      }
+  86            
+  87          
+  88          
+  89          
+  90          
+  91          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    172    ----
+   CODE SIZE        =    188    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =   ----      10
+   DATA SIZE        =   ----      11
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
