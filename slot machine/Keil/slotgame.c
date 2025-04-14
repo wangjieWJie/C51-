@@ -78,7 +78,7 @@ void speed_disp()    //可以调速的显示（只显示第二行最后五位）
 			LCD_one_data(Lucky_alphabet[i], 2, i+11);
 			
 			speed0[i] = speed1[i];
-			
+						
 			if(speed1[i] > 20)
 			{
 				speed1[i] = speed1[i] + (speed1[5]*20);  //速度越来越快
