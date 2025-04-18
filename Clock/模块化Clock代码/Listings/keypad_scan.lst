@@ -1,0 +1,142 @@
+C51 COMPILER V9.60.7.0   KEYPAD_SCAN                                                       04/18/2025 21:20:33 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE KEYPAD_SCAN
+OBJECT MODULE PLACED IN .\Objects\keypad_scan.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE keypad_scan.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listin
+                    -gs\keypad_scan.lst) TABS(2) OBJECT(.\Objects\keypad_scan.obj)
+
+line level    source
+
+   1          //keybaord scan
+   2          #include "clock.h"
+   3          
+   4          /*
+   5          扫描之后将按键保存为数字值Num_Now,需要加'0'才是字符值
+   6          其中数字和按键数字一一对应,'*'用11表示, '#'用12表示
+   7          */
+   8          
+   9          void keypad_scan()   //逐列扫描键盘
+  10          {
+  11   1        num_now = 88;  //自动重设，自动死循环，太高级了
+  12   1        while(num_now == 88)  //当前没数的时候死循环找数，但是此时必须是调整时间时
+  13   1        {
+  14   2          P1 = 0X7F;  
+  15   2          // row1
+  16   2          pad_row1 = 0;
+  17   2          DelayMs(1);
+  18   2          if(P1 != 0X7E)   //判断按键是否按下
+  19   2          {
+  20   3            switch(P1)
+  21   3            {
+  22   4              case 0X76:
+  23   4                num_now = 1;
+  24   4              break;
+  25   4      
+  26   4              case 0X6E:
+  27   4                num_now = 4;
+  28   4              break;
+  29   4              case 0X5E:
+  30   4                num_now = 7;
+  31   4              break;
+  32   4              case 0X3E:
+  33   4                num_now = 11;    //11表示*
+  34   4              break;  
+  35   4            }
+  36   3            while(P1 != 0X7E)    //死循环等待按键弹起
+  37   3            {
+  38   4              button_LED = 1;    //按键提示灯亮起
+  39   4            }
+  40   3          }
+  41   2          pad_row1 = 1;       //将这一列重置为1
+  42   2          
+  43   2          //row2
+  44   2          pad_row2 = 0;
+  45   2          if(P1 != 0X7D)
+  46   2          {
+  47   3            switch(P1)
+  48   3            {
+  49   4              case 0X75:
+  50   4                num_now = 2;
+  51   4              break;
+  52   4      
+  53   4              case 0X6D:
+  54   4                num_now = 5;
+C51 COMPILER V9.60.7.0   KEYPAD_SCAN                                                       04/18/2025 21:20:33 PAGE 2   
+
+  55   4              break;
+  56   4              case 0X5D:
+  57   4                num_now = 8;
+  58   4              break;
+  59   4              case 0X3D:
+  60   4                num_now = 0;
+  61   4              break;  
+  62   4            }
+  63   3            while(P1 != 0X7D)
+  64   3            {
+  65   4              button_LED = 1;    //按键提示灯亮起
+  66   4            }
+  67   3      
+  68   3          }
+  69   2          pad_row2 = 1;
+  70   2          
+  71   2          //row3
+  72   2          pad_row3 = 0;
+  73   2          if(P1 != 0X7B)
+  74   2          {
+  75   3            switch(P1)
+  76   3            {
+  77   4              case 0X73:
+  78   4                num_now = 3;
+  79   4              break;
+  80   4      
+  81   4              case 0X6B:
+  82   4                num_now = 6;
+  83   4              break;
+  84   4              case 0X5B:
+  85   4                num_now = 9;
+  86   4              break;
+  87   4              case 0X3B:
+  88   4                num_now = 12;   //12表示#
+  89   4              break;  
+  90   4            }
+  91   3            while(P1 != 0X7B)
+  92   3            {
+  93   4              button_LED = 1;    //按键提示灯亮起
+  94   4            }
+  95   3      
+  96   3          }
+  97   2          pad_row3 = 1;
+  98   2      
+  99   2          button_LED = 0;    //按键提示灯灭
+ 100   2          
+ 101   2          if(button == 0)   //如果处于设置模式（1）就进行死循环，否则只循环一次
+ 102   2          {
+ 103   3            break;   
+ 104   3          }
+ 105   2          else
+ 106   2          {
+ 107   3            set_twinkle();
+ 108   3          } 
+ 109   2        }
+ 110   1      }
+ 111          
+ 112          
+ 113          
+ 114          
+
+
+C51 COMPILER V9.60.7.0   KEYPAD_SCAN                                                       04/18/2025 21:20:33 PAGE 3   
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    204    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

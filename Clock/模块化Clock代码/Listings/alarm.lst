@@ -1,0 +1,243 @@
+C51 COMPILER V9.60.7.0   ALARM                                                             04/18/2025 21:29:02 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE ALARM
+OBJECT MODULE PLACED IN .\Objects\alarm.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE alarm.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\ala
+                    -rm.lst) TABS(2) OBJECT(.\Objects\alarm.obj)
+
+line level    source
+
+   1          //alarm set
+   2          #include "clock.h"
+   3          
+   4          char all_alarm[3][16] = {"123412341234","Alarm1>06:30 OFF", "Alarm2>06:31 OFF"};
+   5          
+   6          char set_alarm = 0;  //当前设置的闹钟是哪个
+   7          char set_now_alarm = 1;   //当前设置的闹钟的位数
+   8          
+   9          int i=0;
+  10          
+  11          void lesGotoAlarm()
+  12          {
+  13   1            pad_row1 = 0;
+  14   1            set_alarm = 1; //设置闹钟一
+  15   1            alarm();      //设置闹钟，此函数内含一个死循环,但是死循环中有update函数可以确保时间的刷新和更新
+  16   1            pad_row1 = 1;
+  17   1      
+  18   1            pad_row3 = 0;
+  19   1            set_alarm = 2;  //设置闹钟2
+  20   1            alarm(); 
+  21   1            pad_row3 = 1;
+  22   1            set_alarm = 0; //闹钟设置完成,清除闹钟标志
+  23   1      }
+  24          
+  25          
+  26          
+  27          void alarm()
+  28          { 
+  29   1        if(pad_line4 == 0 && button != 1)  //如果星号或者井号被按下，那么开始设置闹钟，可以设置两个，但是此时不能
+             -是设置模式，设置模式不但键盘被不断扫描而且BUG重重
+  30   1        {
+  31   2          DelayMs(1);    //算是一个按键防抖
+  32   2          while(pad_line4 == 0)  //确保按键抬起
+  33   2          {
+  34   3            button_LED = 1;   //提示灯亮
+  35   3          }
+  36   2          button_LED = 0;   //提示灯灭
+  37   2          pad_row1 = 1; //恢复键盘状态
+  38   2          pad_row3 = 1;
+  39   2            
+  40   2          
+  41   2          if(set_alarm == 1 || set_alarm == 2)   // *？：进入闹钟设置
+  42   2          {
+  43   3            LcdShowInit(all_alarm[set_alarm],0,0);  //初始化第一行
+  44   3            while(1)
+  45   3            {
+  46   4              LcdShowInit(str_num, 1, 0);  //就算是设置闹钟，第二行的时间也得不断计数
+  47   4              update_time();
+  48   4      
+  49   4              set_alarming();
+  50   4              
+  51   4      
+  52   4              for(i=7;i<12;i++)  //更新后十位的值
+  53   4              {
+C51 COMPILER V9.60.7.0   ALARM                                                             04/18/2025 21:29:02 PAGE 2   
+
+  54   5                LCDwAOne(all_alarm[set_alarm][i],0,i);
+  55   5              }
+  56   4              
+  57   4              twinkle();   //设置位闪烁,放在合适的位置会让闪烁更加自然
+  58   4              
+  59   4              if(set_alarm == 0)
+  60   4              {
+  61   5                LcdShowInit(" WYM 2022121218 ", 0, 0);
+  62   5                break;
+  63   5              }
+  64   4            }
+  65   3          }
+  66   2        }
+  67   1      }
+  68          
+  69          void set_alarming()
+  70          {
+  71   1          keypad_scan();  //找数，非死循环
+  72   1          switch(set_now_alarm)
+  73   1          {     
+  74   2            case 1:
+  75   2              if(num_now < 3)
+  76   2              {
+  77   3                all_alarm[set_alarm][7] = num_now + '0';
+  78   3                set_now_alarm++;
+  79   3              }
+  80   2              else
+  81   2              {
+  82   3                on_off();
+  83   3              }
+  84   2              break;
+  85   2              
+  86   2            case 2: 
+  87   2              if((num_now<10 && (all_alarm[set_alarm][7]-'0') < 2) || ( num_now<4 && (all_alarm[set_alarm][7]-'0')==
+             -2))
+  88   2              {
+  89   3                all_alarm[set_alarm][8] = num_now + '0';
+  90   3                set_now_alarm++;
+  91   3              }
+  92   2              else
+  93   2              {
+  94   3                on_off();
+  95   3              }
+  96   2              break;
+  97   2      
+  98   2      
+  99   2            case 3:   
+ 100   2              if(num_now < 6)
+ 101   2              {
+ 102   3                all_alarm[set_alarm][10] = num_now + '0';
+ 103   3                set_now_alarm++;
+ 104   3              }
+ 105   2              else
+ 106   2              {
+ 107   3                on_off();
+ 108   3              }
+ 109   2              break;
+ 110   2          
+ 111   2            case 4: 
+ 112   2              if(num_now < 10)            
+ 113   2              {
+ 114   3                all_alarm[set_alarm][11] = num_now + '0';
+C51 COMPILER V9.60.7.0   ALARM                                                             04/18/2025 21:29:02 PAGE 3   
+
+ 115   3                set_now_alarm = 1;
+ 116   3              }
+ 117   2              else
+ 118   2              {
+ 119   3                on_off();
+ 120   3              }
+ 121   2              break;
+ 122   2          } 
+ 123   1      }
+ 124          
+ 125            
+ 126          void on_off()
+ 127          {
+ 128   1              if(num_now == 11 && set_alarm == 1)  //如果在闹钟1的设置中点击*,那么切换闹钟开关          
+ 129   1              {
+ 130   2                if(all_alarm[set_alarm][15] == 'N')
+ 131   2                {
+ 132   3                  all_alarm[set_alarm][13] = 'O';
+ 133   3                  all_alarm[set_alarm][14] = 'F';
+ 134   3                  all_alarm[set_alarm][15] = 'F';
+ 135   3                  LcdShowInit("OFF", 0, 13);
+ 136   3                }
+ 137   2                else if(all_alarm[set_alarm][15] == 'F')
+ 138   2                {
+ 139   3                  all_alarm[set_alarm][13] = ' ';
+ 140   3                  all_alarm[set_alarm][14] = 'O';
+ 141   3                  all_alarm[set_alarm][15] = 'N';
+ 142   3                  LcdShowInit(" ON", 0, 13);
+ 143   3                }
+ 144   2                
+ 145   2              }
+ 146   1              else if(num_now == 12 && set_alarm == 1) //如果在闹钟1的设置中点击#,那么退出闹钟设置 
+ 147   1              {
+ 148   2                set_alarm = 0;
+ 149   2              }
+ 150   1              
+ 151   1              
+ 152   1              else if(num_now == 12 && set_alarm == 2) //如果在闹钟2的设置中点击#,那么切换闹钟开关  
+ 153   1              {
+ 154   2                if(all_alarm[set_alarm][15] == 'N')
+ 155   2                {
+ 156   3                  all_alarm[set_alarm][13] = 'O';
+ 157   3                  all_alarm[set_alarm][14] = 'F';
+ 158   3                  all_alarm[set_alarm][15] = 'F';
+ 159   3                  LcdShowInit("OFF", 0, 13);
+ 160   3                } 
+ 161   2                else if(all_alarm[set_alarm][15] == 'F')
+ 162   2                {
+ 163   3                  all_alarm[set_alarm][13] = ' ';
+ 164   3                  all_alarm[set_alarm][14] = 'O';
+ 165   3                  all_alarm[set_alarm][15] = 'N';
+ 166   3                  LcdShowInit(" ON", 0, 13);
+ 167   3                }
+ 168   2              }
+ 169   1              else if(num_now == 11 && set_alarm == 2) //如果在闹钟2的设置中点击*,那么退出闹钟设置 
+ 170   1              {
+ 171   2                set_alarm = 0;
+ 172   2              }
+ 173   1      }
+ 174            
+ 175            
+ 176          void twinkle()
+C51 COMPILER V9.60.7.0   ALARM                                                             04/18/2025 21:29:02 PAGE 4   
+
+ 177          {
+ 178   1              switch(set_now_alarm)//产生闪烁效果
+ 179   1              {
+ 180   2                case 1:
+ 181   2                  LCDwAOne(' ',0,7);
+ 182   2                break;
+ 183   2                case 2:
+ 184   2                  LCDwAOne(' ',0,8);
+ 185   2                  break;
+ 186   2                case 3:
+ 187   2                  LCDwAOne(' ',0,10);
+ 188   2                  break;
+ 189   2                case 4:
+ 190   2                  LCDwAOne(' ',0,11);
+ 191   2                  break;
+ 192   2              }
+ 193   1      
+ 194   1      }
+ 195            
+ 196          void if_alarming()   //检测是否要响闹钟
+ 197            {
+ 198   1          speaker = 0;
+ 199   1          for(i=1; i<=2; i++) 
+ 200   1          {
+ 201   2            if(all_alarm[i][15] == 'N') 
+ 202   2            {
+ 203   3              if((all_alarm[i][7] == str_num[8]) & (all_alarm[i][8] == str_num[9]) & (all_alarm[i][10] == str_nu
+             -m[11]) & (all_alarm[i][11] == str_num[12])) 
+ 204   3              {
+ 205   4                  speaker = 1;
+ 206   4              }
+ 207   3          }
+ 208   2        }
+ 209   1      }
+ 210          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    680    ----
+   CONSTANT SIZE    =     25    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     52    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

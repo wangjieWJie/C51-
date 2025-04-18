@@ -1,0 +1,1 @@
+"alarm.c" OPTIMIZE (8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\alarm.lst) TABS (2) OBJECT(.\Objects\alarm.obj)

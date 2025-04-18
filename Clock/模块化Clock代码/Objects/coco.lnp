@@ -1,0 +1,10 @@
+".\Objects\STARTUP.obj",
+".\Objects\delay.obj",
+".\Objects\main.obj",
+".\Objects\LCD.obj",
+".\Objects\keypad_scan.obj",
+".\Objects\ctrl_time.obj",
+".\Objects\set_time.obj",
+".\Objects\alarm.obj" 
+TO ".\Objects\coco" 
+PRINT(".\Listings\coco.m51") RAMSIZE(256) 
