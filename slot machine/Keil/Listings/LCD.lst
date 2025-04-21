@@ -1,10 +1,10 @@
-C51 COMPILER V9.60.7.0   LCD                                                               04/14/2025 01:17:01 PAGE 1   
+C51 COMPILER V9.60.7.0   LCD                                                               04/20/2025 13:43:50 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE LCD
 OBJECT MODULE PLACED IN .\Objects\LCD.obj
-COMPILER INVOKED BY: D:\My_App\Keil C51\C51\BIN\C51.EXE LCD.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listin
-                    -gs\LCD.lst) TABS(2) OBJECT(.\Objects\LCD.obj)
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE LCD.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\LCD.l
+                    -st) TABS(2) OBJECT(.\Objects\LCD.obj)
 
 line level    source
 
@@ -62,7 +62,7 @@ line level    source
   52   1      }
   53          
   54          
-C51 COMPILER V9.60.7.0   LCD                                                               04/14/2025 01:17:01 PAGE 2   
+C51 COMPILER V9.60.7.0   LCD                                                               04/20/2025 13:43:50 PAGE 2   
 
   55          void LcdInit()   //≥ı ºªØ“∫æß∆¡
   56          {

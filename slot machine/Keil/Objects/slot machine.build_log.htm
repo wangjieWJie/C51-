@@ -5,11 +5,11 @@
 <h2>Tool Versions:</h2>
 IDE-Version: ¦ÌVision V5.38.0.0
 Copyright (C) 2022 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: A xiao, Stducm, LIC=----
+License Information: asdfggwv wangyongmei, asdfg, LIC=----
  
 Tool Versions:
 Toolchain:       PK51 Prof. Develpers Kit  Version: 9.60.7.0
-Toolchain Path:  D:\My_App\Keil C51\C51\BIN
+Toolchain Path:  D:\Keil_v5\C51\BIN
 C Compiler:      C51.exe V9.60.7.0
 Assembler:       A51.exe V8.2.7.0
 Linker/Locator:  BL51.exe V6.22.4.0
@@ -18,23 +18,23 @@ Hex Converter:   OH51.exe V2.7.0.0
 CPU DLL:         S8051.DLL V3.125.1.0
 Dialog DLL:      DP51.DLL V2.69.0.0 
 <h2>Project:</h2>
-D:\Github\C51\slot machine\Keil\slot machine.uvproj
-Project File Date:  04/11/2025
+C:\Users\wangyongmei\Downloads\C51--main\C51--main\slot machine\Keil\slot machine.uvproj
+Project File Date:  04/19/2025
 
 <h2>Output:</h2>
-Rebuild target 'Target 1'
-assembling STARTUP.A51...
-compiling coco.c...
-compiling LCD.c...
-compiling stopwatch.c...
+Build target 'Target 1'
 compiling slotgame.c...
 linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?LCDOFF?LCD
-Program Size: data=114.1 xdata=0 code=2006
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_LCDGOTOXY?LCD
+    CALLER1: ?C_C51STARTUP
+    CALLER2: ?PR?TIMER1_ISR?SLOTGAME
+Program Size: data=124.1 xdata=0 code=2383
 creating hex file from ".\Objects\slot machine"...
-".\Objects\slot machine" - 0 Error(s), 1 Warning(s).
-Build Time Elapsed:  00:00:00
+".\Objects\slot machine" - 0 Error(s), 2 Warning(s).
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>

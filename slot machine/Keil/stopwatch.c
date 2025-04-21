@@ -31,11 +31,11 @@ void Timer0_ISR() interrupt 1   // 定时器0的中断 ,模式2无需手动重载TH0/TL0
 void timing()
 {
 		int i;
-
+		LcdShowInit(str_num, 2, 0);
 		while(now_mod == 'T')  //点击上键U pin时间，下键D清零，右键R暂停，左键L退出
 		{
 			update_time();  // 实时更新小时和分钟  
-			LcdShowInit(str_num, 2, 0);
+			LcdShowInit(str_num+8, 2, 8);
 			
 			get_button(5);   //检测按键，以便于暂停或者退出，或者将时间pin在第一行
 			

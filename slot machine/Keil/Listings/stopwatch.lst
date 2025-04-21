@@ -1,10 +1,10 @@
-C51 COMPILER V9.60.7.0   STOPWATCH                                                         04/14/2025 01:17:01 PAGE 1   
+C51 COMPILER V9.60.7.0   STOPWATCH                                                         04/20/2025 13:43:50 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE STOPWATCH
 OBJECT MODULE PLACED IN .\Objects\stopwatch.obj
-COMPILER INVOKED BY: D:\My_App\Keil C51\C51\BIN\C51.EXE stopwatch.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\
-                    -Listings\stopwatch.lst) TABS(2) OBJECT(.\Objects\stopwatch.obj)
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE stopwatch.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings
+                    -\stopwatch.lst) TABS(2) OBJECT(.\Objects\stopwatch.obj)
 
 line level    source
 
@@ -43,11 +43,11 @@ line level    source
   31          void timing()
   32          {
   33   1          int i;
-  34   1      
+  34   1          LcdShowInit(str_num, 2, 0);
   35   1          while(now_mod == 'T')  //点击上键U pin时间，下键D清零，右键R暂停，左键L退出
   36   1          {
   37   2            update_time();  // 实时更新小时和分钟  
-  38   2            LcdShowInit(str_num, 2, 0);
+  38   2            LcdShowInit(str_num+8, 2, 8);
   39   2            
   40   2            get_button(5);   //检测按键，以便于暂停或者退出，或者将时间pin在第一行
   41   2            
@@ -62,7 +62,7 @@ line level    source
   50   2            else if(now_button == 'r') //暂停/开始计时
   51   2            {
   52   3              TR0 = ~TR0;
-C51 COMPILER V9.60.7.0   STOPWATCH                                                         04/14/2025 01:17:01 PAGE 2   
+C51 COMPILER V9.60.7.0   STOPWATCH                                                         04/20/2025 13:43:50 PAGE 2   
 
   53   3            }
   54   2            
@@ -126,7 +126,7 @@ line level    source
  111   2          str_num[15] = '0';   // 48 = '0'
  112   2          
  113   2          if(str_num[14] < '5')  // 53 = '5'   
-C51 COMPILER V9.60.7.0   STOPWATCH                                                         04/14/2025 01:17:01 PAGE 3   
+C51 COMPILER V9.60.7.0   STOPWATCH                                                         04/20/2025 13:43:50 PAGE 3   
 
  114   2          {
  115   3            str_num[14]++;
@@ -190,7 +190,7 @@ line level    source
  173          
  174          
  175          void update_time()   //每次执行都会让秒加一，连带着分钟和小时变化
-C51 COMPILER V9.60.7.0   STOPWATCH                                                         04/14/2025 01:17:01 PAGE 4   
+C51 COMPILER V9.60.7.0   STOPWATCH                                                         04/20/2025 13:43:50 PAGE 4   
 
  176          {
  177   1        if(time_update_flag)
@@ -210,7 +210,7 @@ line level    source
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    469    ----
+   CODE SIZE        =    483    ----
    CONSTANT SIZE    =     17    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

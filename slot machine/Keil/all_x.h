@@ -51,8 +51,7 @@ void slotgame();  //老虎机游戏总控
 void gaming();  //进行游戏
 void start_game();  //启动初始化游戏
 void int_timer1();     //定时器1的初始化
-void speed_disp();   //可以调速的显示（只显示第二行最后五位）
-
+void disp_score();
 
 
 

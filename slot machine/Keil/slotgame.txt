@@ -4,18 +4,17 @@
 #include "all_x.h"
 
 
-int speed[][3] = {{0,14,-1},{0,16,-1},{0,18,-1},{0,20,-1},{0,22,-1},{0,24,-1}};	//在游戏开始时，每位的初始循环速度都应该不同，这里单独控制每一位的循环速度，达到丝滑效果，这个值是一直变化的,每秒减去14
+int speed[][3] = {{0,5,-1},{0,7,-1},{0,9,-1},{0,11,-1},{0,12,-1},{0,13,-1}};	//在游戏开始时，每位的初始循环速度都应该不同，这里单独控制每一位的循环速度，达到丝滑效果，这个值是一直变化的,每秒减去14
 
 	
 uchar Lucky_alphabet[5] = "XXXXX";
 uchar i = 0;
-uchar stop_where = 0;
+
 
 void slotgame()  //老虎机游戏总控
 {
 	uchar how_r = 0; 
 	LcdShowInit("Top score:000000", 1, 0);
-	
 	
 		while(now_mod == 'G')  //点击右键R开始游戏，左键L退出
 		{			
@@ -38,35 +37,11 @@ void slotgame()  //老虎机游戏总控
 					break;
 					case 1:
 						LcdShowInit("Your Lucky:MMMMM", 2, 0);
-						srand(43253);   
 						TR1 = 1;    //开启定时器,游戏在中断中
 						how_r++;
 						break;
 					case 2:
-						srand(TH1<<8|TL1); 
-						stop_where = 1;
-						how_r++;
-						break;
-					case 3:
-						srand(TH1<<8|TL1); 
-						stop_where = 2;
-						how_r++;
-						break;
-					case 4:
-						srand(TH1<<8|TL1);
-						stop_where = 3;
-						how_r++;
-						break;
-					case 5:
-						stop_where = 4;
-						srand(TH1<<8|TL1);
-						how_r++;
-						break;
-					case 6:
-						TR1 = 0; 
-						how_r = 0;
-						stop_where = 0;
-						disp_score();
+						TR1 = 0;    
 						break;
 				}
 			}				
@@ -88,7 +63,7 @@ void Timer1_ISR() interrupt 3      //定时器1中断
 
 void gaming()    //进行游戏
 {
-		for(i=stop_where;i<5;i++)    
+		for(i=0;i<5;i++)    
 		{
 			if(++speed[i][0] > speed[i][1])
 			{
@@ -103,47 +78,6 @@ void gaming()    //进行游戏
 		}	
 }
 
-
-void disp_score()
-{
-		int max_count = 1, current_count = 1;
-    
-		for (i = 0; i < 4; i++) // 只需比较到倒数第二个元素
-		{ 
-        if (Lucky_alphabet[i] == Lucky_alphabet[i+1]) 
-				{
-          current_count++;
-          if (current_count > max_count) 
-					{
-            max_count = current_count;
-          }
-        } 
-				else 
-				{
-          current_count = 1; // 重置计数器
-        }	
-		}	
-		
-		switch(max_count)
-		{
-			case 1:
-				LcdShowInit("your score:00001", 1, 0);
-			break;
-			case 2:
-				LcdShowInit("your score:00005", 1, 0);
-			break;
-			case 3:
-				LcdShowInit("your score:00550", 1, 0);
-			break;
-			case 4:
-				LcdShowInit("your score:05555", 1, 0);
-			break;
-			case 5:
-				LcdShowInit("your score:66666", 1, 0);
-			break;
-		
-		}
-}
 
 
 
@@ -173,12 +107,16 @@ void int_timer1()     //定时器1的初始化
 uint wj_rand() 	//生成随机数
 {
 		uint random_nm;
-
-	TR1 = 0;  
+		uchar low, high;
+       
+		TR1 = 0;  
 	
-		random_nm = rand() % 4;  //生成0-2之间的随机数
+    high = TH1;  //利用定时器的不断变换的高低八位来随机生成随机数
+    low = TL1;		//定时器低八位
+		srand(low<<8 | high);    //创意修改，让低位成为高位，使得每次调用时，srand相差更大
+		random_nm = rand() % 3;  //生成0-2之间的随机数
  
-	TR1 = 1;
+		TR1 = 1;
   
 		return random_nm;		//返回生成的随机数
 }

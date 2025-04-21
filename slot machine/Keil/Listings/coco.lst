@@ -1,10 +1,10 @@
-C51 COMPILER V9.60.7.0   COCO                                                              04/14/2025 01:17:01 PAGE 1   
+C51 COMPILER V9.60.7.0   COCO                                                              04/20/2025 13:43:50 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE COCO
 OBJECT MODULE PLACED IN .\Objects\coco.obj
-COMPILER INVOKED BY: D:\My_App\Keil C51\C51\BIN\C51.EXE coco.c OPTIMIZE(8,SPEED) BROWSE INCDIR(all_x.h) DEBUG OBJECTEXTE
-                    -ND PRINT(.\Listings\coco.lst) TABS(2) OBJECT(.\Objects\coco.obj)
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE coco.c OPTIMIZE(8,SPEED) BROWSE INCDIR(all_x.h) DEBUG OBJECTEXTEND PRINT
+                    -(.\Listings\coco.lst) TABS(2) OBJECT(.\Objects\coco.obj)
 
 line level    source
 
@@ -19,172 +19,171 @@ line level    source
    9          
   10          sbit LED = P1^0;
   11          
-  12          uchar now_button = 'n'; //n±íÊ¾µ±Ç°Î´°´ÏÂ£» u¡¢d¡¢l¡¢r ·Ö±ð±íÊ¾ÉÏ¡¢ÏÂ¡¢Ç°½ø¡¢ºóÍË
-  13          uchar now_mod = 't';    //µ±Ç°¹¦ÄÜÑ¡Ôñ£ºt¼ÆÊ±Æ÷µÄÑ¡Ôñ½çÃæ £¬»òÕßgÀÏ»¢»úµÄÑ¡Ôñ½çÃæ£¬T¼ÆÊ±Æ÷ÔËÐÐ½çÃæ £¬»òÕßG
+  12          
+  13          uchar now_button = 'n'; //n±íÊ¾µ±Ç°Î´°´ÏÂ£» u¡¢d¡¢l¡¢r ·Ö±ð±íÊ¾ÉÏ¡¢ÏÂ¡¢Ç°½ø¡¢ºóÍË
+  14          uchar now_mod = 't';    //µ±Ç°¹¦ÄÜÑ¡Ôñ£ºt¼ÆÊ±Æ÷µÄÑ¡Ôñ½çÃæ £¬»òÕßgÀÏ»¢»úµÄÑ¡Ôñ½çÃæ£¬T¼ÆÊ±Æ÷ÔËÐÐ½çÃæ £¬»òÕßG
              -ÀÏ»¢»úµÄÔËÐÐ½çÃæ
-  14          
-  15          uchar* select_t = "select:stopwatch";  //Æô¶¯Éè±¸ÏÔÊ¾Ä£Ê½Ñ¡Ôñ£ºÃë±í»òÕßÀÏ»¢»úÓÎÏ·
-  16          uchar* select_g = "select:slot game";
-  17          
-  18          
-  19          
-  20          void main()
-  21          { 
-  22   1        uchar* str2 =    " back:<    ok:> ";
-  23   1        
-  24   1        while(1)  // ×¼±¸¿ªÊ¼ÓÎÏ·
-  25   1        {
-  26   2          LcdInit();   //³õÊ¼»¯Òº¾§ÆÁ
-  27   2          LcdShowInit(select_t, 1, 0);  //ÏÔÊ¾³õÊ¼Éè¶¨µÄÎÄ±¾
-  28   2          LcdShowInit(str2, 2, 0);
-  29   2          int_timer0();   //³õÊ¼»¯¶¨Ê±Æ÷0ÎªÄ£Ê½2
-  30   2          int_timer1();   //³õÊ¼»¯¶¨Ê±Æ÷1ÎªÄ£Ê½1
-  31   2      
-  32   2      
-  33   2          while(1)
-  34   2          {
-  35   3            if(now_mod=='t'|| now_mod=='g')  //Èç¹ûÔÚ¼ÓÔØ½çÃæ¾ÍÏÔÊ¾Ä£Ê½£¬ËÅ»úÇÐ»»»òÕß½øÈëÄ£Ê½
-  36   3            {
-  37   4              change_mod();    //Ä£Ê½ÇÐ»»
-  38   4            }
-  39   3            else if(now_mod=='T'|| now_mod=='G') //È·ÈÏ½øÈë½çÃæÖ®ºóµÄ¶«Î÷£¬ÆäÊµÕâÌõÑ¡ÔñÓï¾äÃ»±ØÒªÐ´£¬µ«ÊÇ¿ÉÒÔÆð±£»¤
+  15          
+  16          
+  17          void main()
+  18          { 
+  19   1        uchar* str2 =    " back:<    ok:> ";
+  20   1        
+  21   1        while(1)  // ×¼±¸¿ªÊ¼ÓÎÏ·
+  22   1        {
+  23   2          LcdInit();   //³õÊ¼»¯Òº¾§ÆÁ
+  24   2          LcdShowInit("select:stopwatch", 1, 0);  //ÏÔÊ¾³õÊ¼Éè¶¨µÄÎÄ±¾
+  25   2          LcdShowInit(str2, 2, 0);
+  26   2          int_timer0();   //³õÊ¼»¯¶¨Ê±Æ÷0ÎªÄ£Ê½2
+  27   2          int_timer1();   //³õÊ¼»¯¶¨Ê±Æ÷1ÎªÄ£Ê½1
+  28   2      
+  29   2      
+  30   2          while(1)
+  31   2          {
+  32   3            if(now_mod=='t'|| now_mod=='g')  //Èç¹ûÔÚ¼ÓÔØ½çÃæ¾ÍÏÔÊ¾Ä£Ê½£¬ËÅ»úÇÐ»»»òÕß½øÈëÄ£Ê½
+  33   3            {
+  34   4              change_mod();    //Ä£Ê½ÇÐ»»
+  35   4            }
+  36   3            else if(now_mod=='T'|| now_mod=='G') //È·ÈÏ½øÈë½çÃæÖ®ºóµÄ¶«Î÷£¬ÆäÊµÕâÌõÑ¡ÔñÓï¾äÃ»±ØÒªÐ´£¬µ«ÊÇ¿ÉÒÔÆð±£»¤
              -³ÌÐòµÄ×÷ÓÃ
-  40   3            {
-  41   4              switch(now_mod)
-  42   4              {
-  43   5                case 'T':  //½øÈëÃë±í
-  44   5                  TR0 = 1;        // ¿ªÆô¶¨Ê±Æ÷0
-  45   5                  ET0 = 1;        // ÔÊÐí¶¨Ê±Æ÷0ÖÐ¶Ï
-  46   5                  timing();       //Ãë±íÄ£Ê½
+  37   3            {
+  38   4              switch(now_mod)
+  39   4              {
+  40   5                case 'T':  //½øÈëÃë±í
+  41   5                  TR0 = 1;        // ¿ªÆô¶¨Ê±Æ÷0
+  42   5                  ET0 = 1;        // ÔÊÐí¶¨Ê±Æ÷0ÖÐ¶Ï
+  43   5                
+  44   5                  timing();       //Ãë±íÄ£Ê½
+  45   5                
+  46   5                  TR0 = 0;        // ¹Ø±Õ¶¨Ê±Æ÷0
   47   5                
-  48   5                  ET0 = 0;        // ½ûÖ¹¶¨Ê±Æ÷0ÖÐ¶Ï£¬½ÚÔ¼×ÊÔ´
-  49   5                  LcdShowInit(select_t, 1, 0);  //ÍË³öÃë±íÄ£Ê½Ê±ÖØÖÃÆðÊ¼½çÃæ
-  50   5                  LcdShowInit(str2, 2, 0);
-  51   5                  break;
-  52   5                
-C51 COMPILER V9.60.7.0   COCO                                                              04/14/2025 01:17:01 PAGE 2   
+  48   5                  LcdShowInit("select:stopwatch", 1, 0);  //ÍË³öÃë±íÄ£Ê½Ê±ÖØÖÃÆðÊ¼½çÃæ
+  49   5                  LcdShowInit(str2, 2, 0);
+  50   5                  break;
+  51   5                
+  52   5                case 'G':  //½øÈëÓÎÏ·
+C51 COMPILER V9.60.7.0   COCO                                                              04/20/2025 13:43:50 PAGE 2   
 
-  53   5                case 'G':  //½øÈëÓÎÏ·
+  53   5                
   54   5                  slotgame();
   55   5                
-  56   5                  LcdShowInit(select_t, 1, 0);  //ÍË³öÓÎÏ·Ä£Ê½Ê±ÖØÖÃÆðÊ¼½çÃæ
+  56   5                  LcdShowInit("select:slot game", 1, 0);  //ÍË³öÓÎÏ·Ä£Ê½Ê±ÖØÖÃÆðÊ¼½çÃæ
   57   5                  LcdShowInit(str2, 2, 0);          
   58   5                  break;
   59   5              }
   60   4            }
-  61   3            
-  62   3          }
-  63   2      
-  64   2        }
-  65   1      }
+  61   3          }
+  62   2      
+  63   2        }
+  64   1      }
+  65          
   66          
   67          
   68          
-  69          
-  70          void get_button(uint dead)  //Ã¿´Îµ÷ÓÃ¼ì²âÄÄ¸ö°´¼ü±»°´ÏÂ,dead²ÎÊýÓÃÓÚÑ¡ÔñÊÇ·ñÒªËÀÑ­»·²éÕÒ°´¼ü£¬1ËÀÑ­»·£¬0²»
+  69          void get_button(uint dead)  //Ã¿´Îµ÷ÓÃ¼ì²âÄÄ¸ö°´¼ü±»°´ÏÂ,dead²ÎÊýÓÃÓÚÑ¡ÔñÊÇ·ñÒªËÀÑ­»·²éÕÒ°´¼ü£¬1ËÀÑ­»·£¬0²»
              -Ö´ÐÐ £¬ÆäËûÕûÊý²»ËÀÑ­»·£¬´Ëº¯ÊýÓÃÍêÒ»¶¨Òª¼ÇµÃ»Ö¸´°´¼ü×´Ì¬£¬·ñÔò½«»áµ¼ÖÂ²»¿ÉÃèÊöµÄ´íÎó
-  71          {
-  72   1        now_button = 'n';  //Çå³ýÉÏÒ»¸ö°´¼ü
-  73   1        while(dead)
-  74   1        {
-  75   2          if(!(up&&down&&left&&right))  
-  76   2          {
-  77   3            _nop_();_nop_();_nop_();  // ¼òµ¥°´¼üÏû¶¶
-  78   3            
-  79   3            if(up == 0 && down == 1 && left == 1 && right == 1)
-  80   3            {
-  81   4              now_button = 'u';
-  82   4              LED = 0; //Ö»×÷Îª²âÊÔÊ¹ÓÃ
-  83   4              break;
-  84   4            }   
-  85   3            else if(up == 1 && down == 0 && left == 1 && right == 1)
-  86   3            {
-  87   4              now_button = 'd';
-  88   4              LED = 0; //Ö»×÷Îª²âÊÔÊ¹ÓÃ
-  89   4              break;
-  90   4            }
-  91   3            else if(up == 1 && down == 1 && left == 0 && right == 1)
-  92   3            {
-  93   4              now_button = 'l';
-  94   4              LED = 0; //Ö»×÷Îª²âÊÔÊ¹ÓÃ
-  95   4              break;
-  96   4            }
-  97   3            else if(up == 1 && down == 1 && left == 1 && right == 0)
-  98   3            {
-  99   4              now_button = 'r';
- 100   4              LED = 0; //Ö»×÷Îª²âÊÔÊ¹ÓÃ
- 101   4              break;
- 102   4            }
- 103   3          }
- 104   2          if(dead != 1){break;}  //Ö»ÓÐdeadµÈÓÚÒ»²ÅÄÜËÀÑ­»·
- 105   2        }
- 106   1        while(!(up && down  && left && right)){};   // µ±Ã¿¸ö°´¼ü¶¼Ì§ÆðÊ±²ÅÄÜ³öÈ¥½øÐÐÏÂÒ»²½
- 107   1        LED = 1;
- 108   1        
- 109   1      }
- 110            
+  70          {
+  71   1        now_button = 'n';  //Çå³ýÉÏÒ»¸ö°´¼ü
+  72   1        while(dead)
+  73   1        {
+  74   2          if(!(up&&down&&left&&right))  
+  75   2          {
+  76   3            _nop_();_nop_();_nop_();  // ¼òµ¥°´¼üÏû¶¶
+  77   3            
+  78   3            if(up == 0 && down == 1 && left == 1 && right == 1)
+  79   3            {
+  80   4              now_button = 'u';
+  81   4              LED = 0; //Ö»×÷Îª²âÊÔÊ¹ÓÃ
+  82   4              break;
+  83   4            }   
+  84   3            else if(up == 1 && down == 0 && left == 1 && right == 1)
+  85   3            {
+  86   4              now_button = 'd';
+  87   4              LED = 0; 
+  88   4              break;
+  89   4            }
+  90   3            else if(up == 1 && down == 1 && left == 0 && right == 1)
+  91   3            {
+  92   4              now_button = 'l';
+  93   4              LED = 0; 
+  94   4              break;
+  95   4            }
+  96   3            else if(up == 1 && down == 1 && left == 1 && right == 0)
+  97   3            {
+  98   4              now_button = 'r';
+  99   4              LED = 0; 
+ 100   4              break;
+ 101   4            }
+ 102   3          }
+ 103   2          if(dead != 1){break;}  //Ö»ÓÐdeadµÈÓÚÒ»²ÅÄÜËÀÑ­»·
+ 104   2        }
+ 105   1        while(!(up && down  && left && right)){};   // µ±Ã¿¸ö°´¼ü¶¼Ì§ÆðÊ±²ÅÄÜ³öÈ¥½øÐÐÏÂÒ»²½
+ 106   1        LED = 1;
+ 107   1        
+ 108   1      }
+ 109            
+ 110          
  111          
  112          
- 113          
-C51 COMPILER V9.60.7.0   COCO                                                              04/14/2025 01:17:01 PAGE 3   
+ 113          void change_mod()   //ÓÃÓÚÔÚ¿ªÊ¼½çÃæ¸ü»»Ä£Ê½,ËÀÑ­»·£¬Ö±µ½°´ÏÂÒ»¸ö°´¼ü£¨Ã¿´ÎÏìÓ¦Ò»¸ö°´¼ü£¬»ØÍË¼üµ±×öÇ°½ø¼üÓ
+C51 COMPILER V9.60.7.0   COCO                                                              04/20/2025 13:43:50 PAGE 3   
 
- 114          void change_mod()   //ÓÃÓÚÔÚ¿ªÊ¼½çÃæ¸ü»»Ä£Ê½,ËÀÑ­»·£¬Ö±µ½°´ÏÂÒ»¸ö°´¼ü£¨Ã¿´ÎÏìÓ¦Ò»¸ö°´¼ü£¬»ØÍË¼üµ±×öÇ°½ø¼üÓ
              -Ã£©
- 115          {
- 116   1        get_button(1); //¿ªÊ¼½çÃæËÀÑ­»·¾ÍºÃ
- 117   1        switch(now_button)
- 118   1        {
- 119   2          case 'u':                     //µã»÷ÉÏÏÂ¼üÇÐ»»Ä£Ê½£ºÃë±í»òÕßÀÏ»¢»ú
- 120   2          case 'd':                     
- 121   2            if(now_mod == 't')
- 122   2            {
- 123   3              LcdShowInit(select_g, 1, 0);
- 124   3              now_mod = 'g';
- 125   3            }
- 126   2            else
- 127   2            {
- 128   3              LcdShowInit(select_t, 1, 0);
- 129   3              now_mod = 't';
- 130   3            }
- 131   2            break;
+ 114          {
+ 115   1        get_button(1); //¿ªÊ¼½çÃæËÀÑ­»·¾ÍºÃ
+ 116   1        switch(now_button)
+ 117   1        {
+ 118   2          case 'u':                     //µã»÷ÉÏÏÂ¼üÇÐ»»Ä£Ê½£ºÃë±í»òÕßÀÏ»¢»ú
+ 119   2          case 'd':                     
+ 120   2            if(now_mod == 't')
+ 121   2            {
+ 122   3              LcdShowInit("select:slot game", 1, 0);
+ 123   3              now_mod = 'g';
+ 124   3            }
+ 125   2            else
+ 126   2            {
+ 127   3              LcdShowInit("select:stopwatch", 1, 0);
+ 128   3              now_mod = 't';
+ 129   3            }
+ 130   2            break;
+ 131   2            
  132   2            
- 133   2            
- 134   2          case 'l':                   //µã»÷×óÓÒ¼ü½øÈëÄ£Ê½
- 135   2          case 'r':
- 136   2            switch(now_mod)
- 137   2            {
- 138   3              case 'g':
- 139   3                LcdShowInit("Strat:>   Back:<", 2, 0);
- 140   3                now_mod -= 32;   //Ð¡Ð´×ÖÄ¸¼Ó32±ä³É´óÐ´×ÖÄ¸G
- 141   3                break;
- 142   3              case 't':
- 143   3                LcdShowInit("Pause:U  Clear:D", 1, 0);
- 144   3                now_mod -= 32;  
- 145   3                break;
- 146   3            }
- 147   2            break;
- 148   2        }
- 149   1      }
+ 133   2          case 'l':                   //µã»÷×óÓÒ¼ü½øÈëÄ£Ê½
+ 134   2          case 'r':
+ 135   2            switch(now_mod)
+ 136   2            {
+ 137   3              case 'g':
+ 138   3                LcdShowInit("Strat:>   Back:<", 2, 0);
+ 139   3                now_mod -= 32;   //Ð¡Ð´×ÖÄ¸¼Ó32±ä³É´óÐ´×ÖÄ¸G
+ 140   3                break;
+ 141   3              case 't':
+ 142   3                LcdShowInit("Pause:U  Clear:D", 1, 0);
+ 143   3                now_mod -= 32;  
+ 144   3                break;
+ 145   3            }
+ 146   2            break;
+ 147   2        }
+ 148   1      }
+ 149          
  150          
  151          
- 152          
- 153          /*
+ 152          /*
+ 153          
  154          
- 155          
- 156          */
+ 155          */
+ 156          
  157          
  158          
  159          
  160          
- 161          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    384    ----
+   CODE SIZE        =    382    ----
    CONSTANT SIZE    =     85    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =      8       3
+   DATA SIZE        =      2       3
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.

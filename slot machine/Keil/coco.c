@@ -9,12 +9,9 @@ sbit right = P2^6;	//Ç°½ø
 
 sbit LED = P1^0;
 
+
 uchar now_button = 'n';	//n±íÊ¾µ±Ç°Î´°´ÏÂ£» u¡¢d¡¢l¡¢r ·Ö±ğ±íÊ¾ÉÏ¡¢ÏÂ¡¢Ç°½ø¡¢ºóÍË
 uchar now_mod = 't';    //µ±Ç°¹¦ÄÜÑ¡Ôñ£ºt¼ÆÊ±Æ÷µÄÑ¡Ôñ½çÃæ £¬»òÕßgÀÏ»¢»úµÄÑ¡Ôñ½çÃæ£¬T¼ÆÊ±Æ÷ÔËĞĞ½çÃæ £¬»òÕßGÀÏ»¢»úµÄÔËĞĞ½çÃæ
-
-uchar* select_t = "select:stopwatch";  //Æô¶¯Éè±¸ÏÔÊ¾Ä£Ê½Ñ¡Ôñ£ºÃë±í»òÕßÀÏ»¢»úÓÎÏ·
-uchar* select_g = "select:slot game";
-
 
 
 void main()
@@ -24,7 +21,7 @@ void main()
 	while(1)  // ×¼±¸¿ªÊ¼ÓÎÏ·
 	{
 		LcdInit();   //³õÊ¼»¯Òº¾§ÆÁ
-		LcdShowInit(select_t, 1, 0);	//ÏÔÊ¾³õÊ¼Éè¶¨µÄÎÄ±¾
+		LcdShowInit("select:stopwatch", 1, 0);	//ÏÔÊ¾³õÊ¼Éè¶¨µÄÎÄ±¾
 		LcdShowInit(str2, 2, 0);
 		int_timer0(); 	//³õÊ¼»¯¶¨Ê±Æ÷0ÎªÄ£Ê½2
 		int_timer1();   //³õÊ¼»¯¶¨Ê±Æ÷1ÎªÄ£Ê½1
@@ -43,22 +40,24 @@ void main()
 					case 'T':  //½øÈëÃë±í
 						TR0 = 1;        // ¿ªÆô¶¨Ê±Æ÷0
 						ET0 = 1;        // ÔÊĞí¶¨Ê±Æ÷0ÖĞ¶Ï
+					
 						timing();				//Ãë±íÄ£Ê½
 					
-						ET0 = 0;        // ½ûÖ¹¶¨Ê±Æ÷0ÖĞ¶Ï£¬½ÚÔ¼×ÊÔ´
-						LcdShowInit(select_t, 1, 0);	//ÍË³öÃë±íÄ£Ê½Ê±ÖØÖÃÆğÊ¼½çÃæ
+						TR0 = 0;        // ¹Ø±Õ¶¨Ê±Æ÷0
+					
+						LcdShowInit("select:stopwatch", 1, 0);	//ÍË³öÃë±íÄ£Ê½Ê±ÖØÖÃÆğÊ¼½çÃæ
 						LcdShowInit(str2, 2, 0);
 						break;
 					
 					case 'G':  //½øÈëÓÎÏ·
+					
 						slotgame();
 					
-						LcdShowInit(select_t, 1, 0);	//ÍË³öÓÎÏ·Ä£Ê½Ê±ÖØÖÃÆğÊ¼½çÃæ
+						LcdShowInit("select:slot game", 1, 0);	//ÍË³öÓÎÏ·Ä£Ê½Ê±ÖØÖÃÆğÊ¼½çÃæ
 						LcdShowInit(str2, 2, 0);					
 						break;
 				}
 			}
-			
 		}
 
 	}
@@ -85,19 +84,19 @@ void get_button(uint dead)	//Ã¿´Îµ÷ÓÃ¼ì²âÄÄ¸ö°´¼ü±»°´ÏÂ,dead²ÎÊıÓÃÓÚÑ¡ÔñÊÇ·ñÒªËÀ
 			else if(up == 1 && down == 0 && left == 1 && right == 1)
 			{
 				now_button = 'd';
-				LED = 0; //Ö»×÷Îª²âÊÔÊ¹ÓÃ
+				LED = 0; 
 				break;
 			}
 			else if(up == 1 && down == 1 && left == 0 && right == 1)
 			{
 				now_button = 'l';
-				LED = 0; //Ö»×÷Îª²âÊÔÊ¹ÓÃ
+				LED = 0; 
 				break;
 			}
 			else if(up == 1 && down == 1 && left == 1 && right == 0)
 			{
 				now_button = 'r';
-				LED = 0; //Ö»×÷Îª²âÊÔÊ¹ÓÃ
+				LED = 0; 
 				break;
 			}
 		}
@@ -120,12 +119,12 @@ void change_mod()   //ÓÃÓÚÔÚ¿ªÊ¼½çÃæ¸ü»»Ä£Ê½,ËÀÑ­»·£¬Ö±µ½°´ÏÂÒ»¸ö°´¼ü£¨Ã¿´ÎÏìÓ¦Ò
 		case 'd':											
 			if(now_mod == 't')
 			{
-				LcdShowInit(select_g, 1, 0);
+				LcdShowInit("select:slot game", 1, 0);
 				now_mod = 'g';
 			}
 			else
 			{
-				LcdShowInit(select_t, 1, 0);
+				LcdShowInit("select:stopwatch", 1, 0);
 				now_mod = 't';
 			}
 			break;
