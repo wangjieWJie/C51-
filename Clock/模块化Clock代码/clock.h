@@ -10,7 +10,7 @@ void DelayMs(uint time);
 extern uchar num_now;
 sbit button = P2^7;
 //sbit EX0_key = P3^2;  		// P3.2是外部中断0的官方指定引脚 
-sbit button_LED = P2^3;    //键盘灯，当按键按下后亮起，按键抬起熄灭
+sbit button_LED = P2^4;    //键盘灯，当按键按下后亮起，按键抬起熄灭
 sbit speaker = P2^5;
 
 sbit pad_row1 = P1^0;   //键盘列

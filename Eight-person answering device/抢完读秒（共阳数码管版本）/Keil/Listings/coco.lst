@@ -1,0 +1,237 @@
+C51 COMPILER V9.60.7.0   COCO                                                              05/14/2025 01:08:00 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE COCO
+OBJECT MODULE PLACED IN .\Objects\coco.obj
+COMPILER INVOKED BY: D:\My_App\Keil C51\C51\BIN\C51.EXE coco.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listi
+                    -ngs\coco.lst) TABS(2) OBJECT(.\Objects\coco.obj)
+
+line level    source
+
+   1          #include <reg52.h>
+   2          
+   3          #define uchar unsigned char
+   4          #define uint unsigned int
+   5          
+   6          void easy_button();
+   7          void display(uchar dispN, uint S);
+   8          void int_timer0();
+   9          void delay(uint ms);
+  10          
+  11          
+  12          sbit BB = P2^4;   //蜂鸣器
+  13          sbit LED = P2^5;  
+  14          sbit ctrl = P2^7; //主持人总控键
+  15          sbit P2_6 = P2^6;
+  16          /* sfr button = P3;   选手抢答键
+  17             sfr display = P0;  八段数码管 */
+  18          sbit select1 = P2^0;  //数码管选段1,用于显示选中的选手编号
+  19          sbit select2 = P2^1;  //数码管选段2,
+  20          sbit select3 = P2^2;  //数码管选段3,
+  21          sbit select4 = P2^3;  //数码管选段4,
+  22          
+  23          uchar P3is; //记录一瞬间的按键
+  24          uchar num_seg[12] = {0XC0,0XF9,0XA4,0XB0,0X99,0X92,0X82,0XF8,0X80,0X90,0X88,0X83};  //数码管共阳极字段码
+  25          uchar disp_now = 0X88;
+  26          uint time_counter = 0;   //定时器的计数器，每记20次表示过了1秒（50ms*20 = 1s）
+  27          uint BBS = 1;  // 表示蜂鸣器响多少秒，只要不为零就响，无需多余操作
+  28          uint gogogo = 0; //表示数码管倒计时多少秒，只要不为零就计时，无需多余操作
+  29          uint outwhile = 0;
+  30          
+  31          
+  32          void main()
+  33          {
+  34   1        int_timer0(); //闲着没事先初始化一个定时器，不用白不用
+  35   1        BB = 0; //让蜂鸣器开局别响
+  36   1        while(1)
+  37   1        {
+  38   2          if(!ctrl)  // 主持人按下按钮进入抢答
+  39   2          {
+  40   3            BBS = 1;
+  41   3            BB = 1;  //可以不写这句话，但是不写的话蜂鸣器肯定会延时响应
+  42   3            while(1)  
+  43   3            {
+  44   4              if(outwhile == 1)
+  45   4              {
+  46   5                outwhile = 0;
+  47   5                P2_6 = 0;
+  48   5                break;
+  49   5              }
+  50   4              
+  51   4              if(P3 != 0XFF && disp_now == 0X88) //某个按钮按下时进入，检测哪个按钮被按下,我的意思是一次循环那么快，
+             -就算两个按钮同时按下，也有先后顺序吧，也能检测到吧（Doge）
+  52   4              {
+  53   5                P3is = P3;
+C51 COMPILER V9.60.7.0   COCO                                                              05/14/2025 01:08:00 PAGE 2   
+
+  54   5                easy_button();  //检测按下的按键，存入disp_now中，此行可保证这个条件语句只被执行一次
+  55   5                display(disp_now, 1); //检测完按键按下直接显示
+  56   5                BBS = 1;  //蜂鸣器响两秒
+  57   5                BB = 1;  //可以不写这句话，但是不写的话蜂鸣器肯定会延时响应
+  58   5                gogogo = 10; //十秒倒计时
+  59   5              }
+  60   4              else if(disp_now != 0X88) // 表示按键按下并记录完成，进入下一步，开始十秒倒计时
+  61   4              {
+  62   5                while(1)
+  63   5                {
+  64   6                  display(disp_now, 1);
+  65   6      
+  66   6                  if(gogogo > 0 && gogogo <= 10)
+  67   6                  {
+  68   7                    display(num_seg[gogogo-1],4);
+  69   7                  }
+  70   6                  else
+  71   6                  {
+  72   7                    BBS = 1;
+  73   7                    BB = 1;  //可以不写这句话，但是不写的话蜂鸣器肯定会延时响应
+  74   7                    disp_now = 0X88;
+  75   7                    outwhile = 1;
+  76   7                    break;
+  77   7                  }
+  78   6                }
+  79   5              }
+  80   4            }
+  81   3          }
+  82   2        }
+  83   1      }
+  84          
+  85          
+  86          void Timer0_ISR() interrupt 1   // 定时器0的中断 ,模式2无需手动重载TH0/TL0
+  87          {
+  88   1          time_counter++;             // 累计中断次数
+  89   1          
+  90   1          if(time_counter >= 10000)      // 10000次×100μs=1000ms
+  91   1          {
+  92   2            time_counter = 0;
+  93   2            if(BBS > 0)
+  94   2            {
+  95   3              BB = 1; //蜂鸣器BB响
+  96   3              BBS--; //每秒减一
+  97   3            }
+  98   2            else
+  99   2            {
+ 100   3              BB = 0; 
+ 101   3            }
+ 102   2              
+ 103   2            if(gogogo > 0 )  //倒计时
+ 104   2            {
+ 105   3              gogogo--;
+ 106   3            }
+ 107   2          }
+ 108   1      }
+ 109          
+ 110          
+ 111          
+ 112          void delay(uint ms)
+ 113          {
+ 114   1        int i, j;
+ 115   1        for(; ms > 0; ms--)
+C51 COMPILER V9.60.7.0   COCO                                                              05/14/2025 01:08:00 PAGE 3   
+
+ 116   1          for (i = 2; i > 0; i--)
+ 117   1             for (j = 239; j > 0; j--);
+ 118   1      }
+ 119          
+ 120          
+ 121          void display(uchar dispN, uint S) //数码管显示，参数为显示数字和显示位置
+ 122          {
+ 123   1        switch(S)
+ 124   1        {
+ 125   2          case 1:
+ 126   2            select1 = 1;
+ 127   2            select2 = 0;
+ 128   2            select3 = 0;
+ 129   2            select4 = 0;
+ 130   2          case 2:
+ 131   2            select1 = 0;
+ 132   2            select2 = 1;
+ 133   2            select3 = 0;
+ 134   2            select4 = 0;
+ 135   2            break;
+ 136   2          case 3:
+ 137   2            select1 = 0;
+ 138   2            select2 = 0;
+ 139   2            select3 = 1;
+ 140   2            select4 = 0;
+ 141   2            break;
+ 142   2          case 4:
+ 143   2            select1 = 0;
+ 144   2            select2 = 0;
+ 145   2            select3 = 0;
+ 146   2            select4 = 1;  
+ 147   2            break;
+ 148   2        }
+ 149   1        P0 = dispN;
+ 150   1          
+ 151   1        delay(1);
+ 152   1              
+ 153   1        select1 = 0;
+ 154   1        select2 = 0;
+ 155   1        select3 = 0;
+ 156   1        select4 = 0;
+ 157   1      }
+ 158          
+ 159          
+ 160          void easy_button()  //检测按下的按键，存入disp_now中
+ 161          {
+ 162   1        switch(P3is)   //检测按下的是个键
+ 163   1        {
+ 164   2                case 0XFE:
+ 165   2                  disp_now = num_seg[1];   //记录下按下的按钮
+ 166   2                  break;
+ 167   2                case 0XFD:
+ 168   2                  disp_now = num_seg[2];
+ 169   2                  break;
+ 170   2                case 0XFB:
+ 171   2                  disp_now = num_seg[3];
+ 172   2                  break;
+ 173   2                case 0XF7:
+ 174   2                  disp_now = num_seg[4];
+ 175   2                  break;
+ 176   2                case 0XEF:
+ 177   2                  disp_now = num_seg[5];
+C51 COMPILER V9.60.7.0   COCO                                                              05/14/2025 01:08:00 PAGE 4   
+
+ 178   2                  break;
+ 179   2                case 0XDF:
+ 180   2                  disp_now = num_seg[6];
+ 181   2                  break;
+ 182   2                case 0XBF:
+ 183   2                  disp_now = num_seg[7];
+ 184   2                  break;
+ 185   2                case 0X7F:
+ 186   2                  disp_now = num_seg[8];
+ 187   2                  break;
+ 188   2              }
+ 189   1      }
+ 190          
+ 191          
+ 192          
+ 193          void int_timer0()   // 初始化定时器0为模式2（自动重载）
+ 194          {
+ 195   1          TMOD &= 0XF0;   // 清零定时器0的模式位（保留定时器1的配置）
+ 196   1          TMOD |= 0X02;   // 设置定时器0为模式2（8位自动重载）
+ 197   1          TH0 = 0xA4;     // 自动重载值（100μs定时初值，11.0592MHz）
+ 198   1          TL0 = 0xA4;     // 首次启动时的初值（必须与TH0相同）
+ 199   1          ET0 = 1;        // 允许定时器0中断
+ 200   1          TR0 = 1;        // 启动定时器0
+ 201   1          EA = 1;         // 开启全局中断
+ 202   1      }
+ 203          
+ 204              
+ 205          
+ 206          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    415    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     22    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,10 +1,10 @@
-C51 COMPILER V9.60.7.0   ALARM                                                             04/18/2025 21:29:02 PAGE 1   
+C51 COMPILER V9.60.7.0   ALARM                                                             04/30/2025 09:41:06 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE ALARM
 OBJECT MODULE PLACED IN .\Objects\alarm.obj
-COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE alarm.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\ala
-                    -rm.lst) TABS(2) OBJECT(.\Objects\alarm.obj)
+COMPILER INVOKED BY: D:\My_App\Keil C51\C51\BIN\C51.EXE alarm.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\List
+                    -ings\alarm.lst) TABS(2) OBJECT(.\Objects\alarm.obj)
 
 line level    source
 
@@ -62,7 +62,7 @@ line level    source
   51   4      
   52   4              for(i=7;i<12;i++)  //更新后十位的值
   53   4              {
-C51 COMPILER V9.60.7.0   ALARM                                                             04/18/2025 21:29:02 PAGE 2   
+C51 COMPILER V9.60.7.0   ALARM                                                             04/30/2025 09:41:06 PAGE 2   
 
   54   5                LCDwAOne(all_alarm[set_alarm][i],0,i);
   55   5              }
@@ -126,7 +126,7 @@ line level    source
  112   2              if(num_now < 10)            
  113   2              {
  114   3                all_alarm[set_alarm][11] = num_now + '0';
-C51 COMPILER V9.60.7.0   ALARM                                                             04/18/2025 21:29:02 PAGE 3   
+C51 COMPILER V9.60.7.0   ALARM                                                             04/30/2025 09:41:06 PAGE 3   
 
  115   3                set_now_alarm = 1;
  116   3              }
@@ -190,7 +190,7 @@ line level    source
  174            
  175            
  176          void twinkle()
-C51 COMPILER V9.60.7.0   ALARM                                                             04/18/2025 21:29:02 PAGE 4   
+C51 COMPILER V9.60.7.0   ALARM                                                             04/30/2025 09:41:06 PAGE 4   
 
  177          {
  178   1              switch(set_now_alarm)//产生闪烁效果
