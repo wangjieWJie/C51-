@@ -1,0 +1,74 @@
+C51 COMPILER V9.60.7.0   OLDREG                                                            05/17/2025 13:11:30 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE OLDREG
+OBJECT MODULE PLACED IN .\Objects\oldreg.obj
+COMPILER INVOKED BY: D:\My_App\Keil C51\C51\BIN\C51.EXE oldreg.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Lis
+                    -tings\oldreg.lst) TABS(2) OBJECT(.\Objects\oldreg.obj)
+
+line level    source
+
+   1          #include "APAD.h"
+   2          
+   3          sbit select1 = P2^0;  //数码管选段1,用于显示选中的选手编号
+   4          sbit select2 = P2^1;  //数码管选段2,
+   5          sbit select3 = P2^2;  //数码管选段3,
+   6          sbit select4 = P2^3;  //数码管选段4,
+   7          
+   8          
+   9          uchar num_seg[12] = {0XC0,0XF9,0XA4,0XB0,0X99,0X92,0X82,0XF8,0X80,0X90,0X88,0X83};  //数码管共阳极字段码
+  10          
+  11          
+  12          void display(uchar dispN, uint S) //数码管显示，参数为显示数字和显示位置
+  13          {
+  14   1        switch(S)
+  15   1        {
+  16   2          case 1:
+  17   2            select1 = 1;
+  18   2            select2 = 0;
+  19   2            select3 = 0;
+  20   2            select4 = 0;
+  21   2          case 2:
+  22   2            select1 = 0;
+  23   2            select2 = 1;
+  24   2            select3 = 0;
+  25   2            select4 = 0;
+  26   2            break;
+  27   2          case 3:
+  28   2            select1 = 0;
+  29   2            select2 = 0;
+  30   2            select3 = 1;
+  31   2            select4 = 0;
+  32   2            break;
+  33   2          case 4:
+  34   2            select1 = 0;
+  35   2            select2 = 0;
+  36   2            select3 = 0;
+  37   2            select4 = 1;  
+  38   2            break;
+  39   2        }
+  40   1        P0 = dispN;
+  41   1          
+  42   1        delay(1);
+  43   1              
+  44   1        select1 = 0;
+  45   1        select2 = 0;
+  46   1        select3 = 0;
+  47   1        select4 = 0;
+  48   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     72    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+C51 COMPILER V9.60.7.0   OLDREG                                                            05/17/2025 13:11:30 PAGE 2   
+
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     12    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -386,6 +386,26 @@
               <FileType>1</FileType>
               <FilePath>.\coco.c</FilePath>
             </File>
+            <File>
+              <FileName>LCD.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\LCD.c</FilePath>
+            </File>
+            <File>
+              <FileName>delay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\delay.c</FilePath>
+            </File>
+            <File>
+              <FileName>oldreg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\oldreg.c</FilePath>
+            </File>
+            <File>
+              <FileName>APAD.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\APAD.h</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
