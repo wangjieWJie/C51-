@@ -47,7 +47,7 @@ uchar str_num[16];     // 第二行的电话号码
 
 void main()
 {
-	uchar* str1 = "  ZK2022121182  ";
+	uchar* str1 = "  WJ2022121144  ";
 	uchar* str2 = " Welcome to TELE";  // Press NumKey  :
 	
 	uint i = 0;

@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   MAIN                                                              04/13/2025 14:18:12 PAGE 1   
+C51 COMPILER V9.60.7.0   MAIN                                                              05/17/2025 16:06:30 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
@@ -57,12 +57,12 @@ line level    source
   47          
   48          void main()
   49          {
-  50   1        uchar* str1 = "  ZK2022121182  ";
+  50   1        uchar* str1 = "  WJ2022121144  ";
   51   1        uchar* str2 = " Welcome to TELE";  // Press NumKey  :
   52   1        
   53   1        uint i = 0;
   54   1        for(;i<16;i++)   // 初始化str_num为全空格
-C51 COMPILER V9.60.7.0   MAIN                                                              04/13/2025 14:18:12 PAGE 2   
+C51 COMPILER V9.60.7.0   MAIN                                                              05/17/2025 16:06:30 PAGE 2   
 
   55   1        {
   56   2          str_num[i] = 32;
@@ -126,7 +126,7 @@ line level    source
  114   4              case 0X6E:
  115   4                num_now = 4;
  116   4              break;
-C51 COMPILER V9.60.7.0   MAIN                                                              04/13/2025 14:18:12 PAGE 3   
+C51 COMPILER V9.60.7.0   MAIN                                                              05/17/2025 16:06:30 PAGE 3   
 
  117   4              case 0X5E:
  118   4                num_now = 7;
@@ -190,7 +190,7 @@ line level    source
  176   2          pad_row3 = 1;
  177   2          
  178   2        }
-C51 COMPILER V9.60.7.0   MAIN                                                              04/13/2025 14:18:12 PAGE 4   
+C51 COMPILER V9.60.7.0   MAIN                                                              05/17/2025 16:06:30 PAGE 4   
 
  179   1      }
  180          
@@ -254,7 +254,7 @@ line level    source
  238          void LcdInit()
  239          {
  240   1        LcdWriteCmd(0x38);       
-C51 COMPILER V9.60.7.0   MAIN                                                              04/13/2025 14:18:12 PAGE 5   
+C51 COMPILER V9.60.7.0   MAIN                                                              05/17/2025 16:06:30 PAGE 5   
 
  241   1         LcdOn();       
  242   1        LcdWriteCmd(0x06);       
@@ -318,7 +318,7 @@ line level    source
  299   2        }
  300   1      }
 
-C51 COMPILER V9.60.7.0   MAIN                                                              04/13/2025 14:18:12 PAGE 6   
+C51 COMPILER V9.60.7.0   MAIN                                                              05/17/2025 16:06:30 PAGE 6   
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
